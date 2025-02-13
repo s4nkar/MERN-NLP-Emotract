@@ -1,38 +1,44 @@
-const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const authRoutes = require("./routes/auth");
-const messageRoutes = require("./routes/messages");
-const app = express();
-const socket = require("socket.io");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import connectDB from "./config/db.js"; 
+import authRoutes from "./routes/auth.js";
+import messageRoutes from "./routes/messages.js";
+import { Server } from "socket.io";
+import logger  from "./middleware/logger.js";
+import swaggerDocs from './config/swagger.js';
+import dotenv from "dotenv";
 
+dotenv.config();
+
+const app = express();
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("DB Connetion Successfull");
-  })
-  .catch((err) => {
-    console.log("DB Connection Unsuccessfull", err.message);
-  });
+// Logger middleware
+app.use(logger);
+
+// Connect to MongoDB
+connectDB();
  
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-const server = app.listen(process.env.PORT, () =>
-  console.log(`Server started on http://localhost:${process.env.PORT}`)
+// Swagger Docs Route
+swaggerDocs(app);
+
+const PORT = process.env.PORT || 5000;
+const server = app.listen(PORT, () =>
+  console.log(`Server started on http://localhost:${PORT}`)
 );
 
-const io = socket(server, {
+// Use default WebSocket engine (ws) that comes with socket.io
+const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
-    credentials: true,
+    origin: "http://localhost:3000",  // React app on port 3000
+    credentials: true,  // Allow credentials to be passed
   },
 });
 

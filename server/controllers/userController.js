@@ -1,15 +1,17 @@
-const User = require("../models/userModel");
-const bcrypt = require("bcrypt");
+import User from "../models/userModel.js";
+import bcrypt from "bcrypt";
 
-module.exports.login = async (req, res, next) => {
+export const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
     if (!user)
       return res.json({ msg: "Incorrect Username or Password", status: false });
+      
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
       return res.json({ msg: "Incorrect Username or Password", status: false });
+      
     delete user.password;
     return res.json({ status: true, user });
   } catch (ex) {
@@ -17,7 +19,7 @@ module.exports.login = async (req, res, next) => {
   }
 };
 
-module.exports.register = async (req, res, next) => {
+export const register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
     const usernameCheck = await User.findOne({ username });
@@ -39,7 +41,7 @@ module.exports.register = async (req, res, next) => {
   }
 };
 
-module.exports.getAllUsers = async (req, res, next) => {
+export const getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({ _id: { $ne: req.params.id } }).select([
       "email",
@@ -53,28 +55,32 @@ module.exports.getAllUsers = async (req, res, next) => {
   }
 };
 
-module.exports.setAvatar = async (req, res, next) => {
+export const setAvatar = async (req, res, next) => {
   try {
-    const userId = req.params.id;
-    const avatarImage = req.body.image;
+    const userId = req.params.id; // Capturing the user ID from the URL
+    const avatarImage = req.body.image; // Capturing the image URL from the body
+
+    // Find the user by ID and update their avatar image and avatar status
     const userData = await User.findByIdAndUpdate(
-      userId,
+      userId, // Using the userId from the URL parameter
       {
-        isAvatarImageSet: true,
-        avatarImage,
+        isAvatarImageSet: true, // Flagging the avatar image as set
+        avatarImage, // Updating the avatarImage field with the provided image URL
       },
-      { new: true }
+      { new: true } // Return the updated user document
     );
+
     return res.json({
-      isSet: userData.isAvatarImageSet,
-      image: userData.avatarImage,
+      isSet: userData.isAvatarImageSet, // Returning if the avatar image was successfully set
+      image: userData.avatarImage, // Returning the new avatar image URL
     });
   } catch (ex) {
-    next(ex);
+    next(ex); // Passing any errors to the next middleware (usually an error handler)
   }
 };
 
-module.exports.logOut = (req, res, next) => {
+
+export const logOut = (req, res, next) => {
   try {
     if (!req.params.id) return res.json({ msg: "User id is required " });
     onlineUsers.delete(req.params.id);

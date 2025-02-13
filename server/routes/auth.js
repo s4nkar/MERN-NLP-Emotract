@@ -1,17 +1,316 @@
-const {
-  login,
-  register,
-  getAllUsers,
-  setAvatar,
-  logOut,
-} = require("../controllers/userController");
+import { 
+  login, 
+  register, 
+  getAllUsers, 
+  setAvatar, 
+  logOut 
+} from "../controllers/userController.js";
+import express from "express";
 
-const router = require("express").Router();
+const authRoutes = express.Router();
 
-router.post("/login", login);
-router.post("/register", register);
-router.get("/allusers/:id", getAllUsers);
-router.post("/setavatar/:id", setAvatar);
-router.get("/logout/:id", logOut);
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login to your account
+ *     description: Login using username and password.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username of the user
+ *                 example: user123
+ *               password:
+ *                 type: string
+ *                 description: The password of the user
+ *                 example: secretpassword
+ *     responses:
+ *       200:
+ *         description: Successfully logged in
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: true
+ *                 user:
+ *                   type: object
+ *                   description: User details
+ *                   properties:
+ *                     username:
+ *                       type: string
+ *                       example: user123
+ *                     name:
+ *                       type: string
+ *                       example: John Doe
+ *       400:
+ *         description: Invalid username or password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: Incorrect Username or Password
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ */
+authRoutes.post("/login", login);
 
-module.exports = router;
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     description: Register a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: Username for the new user
+ *                 example: johnDoe
+ *               email:
+ *                 type: string
+ *                 description: Email address for the new user
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 description: Password for the new user
+ *                 example: secretpassword
+ *     responses:
+ *       200:
+ *         description: Successfully registered user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: true
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     username:
+ *                       type: string
+ *                       example: 'johnDoe'
+ *                     email:
+ *                       type: string
+ *                       example: 'john@example.com'
+ *       400:
+ *         description: Username or email already in use
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: 'Username already used'
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: 'Internal server error'
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ */
+authRoutes.post("/register", register);
+
+/**
+ * @swagger
+ * /api/auth/users/{id}:
+ *   get:
+ *     description: Get all users except the one specified by the ID
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID of the user making the request (will be excluded from the returned list)
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: List of users excluding the requesting user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     example: "605c72ef153207001f6470d1"
+ *                   username:
+ *                     type: string
+ *                     example: "johnDoe"
+ *                   email:
+ *                     type: string
+ *                     example: "john@example.com"
+ *                   avatarImage:
+ *                     type: string
+ *                     example: "http://someurl.com/avatar.jpg"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: 'Internal server error'
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ */
+authRoutes.get("/allusers/:id", getAllUsers);
+
+/**
+ * @swagger
+ * /api/auth/setavatar/{id}:
+ *   post:
+ *     summary: Set the avatar image for a user
+ *     description: Allows a user to set their avatar image using the provided image URL.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID of the user whose avatar is being updated.
+ *         required: true
+ *         type: string
+ *         example: "605c72ef153207001f6470d1"
+ *       - name: image
+ *         in: body
+ *         description: The URL of the avatar image.
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             image:
+ *               type: string
+ *               description: The URL to the avatar image.
+ *               example: "https://example.com/avatar.jpg"
+ *     responses:
+ *       200:
+ *         description: Successfully updated avatar
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 isSet:
+ *                   type: boolean
+ *                   example: true
+ *                 image:
+ *                   type: string
+ *                   example: "https://example.com/avatar.jpg"
+ *       400:
+ *         description: Invalid image URL or user ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Invalid image URL"
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "User not found"
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Internal server error"
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ */
+authRoutes.post("/setavatar/:id", setAvatar);
+
+/**
+ * @swagger
+ * /api/auth/logout/{id}:
+ *   get:
+ *     summary: Log out the user
+ *     description: Logs out a user by removing them from the online users list using their ID.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: The ID of the user who is logging out.
+ *         required: true
+ *         type: string
+ *         example: "605c72ef153207001f6470d1"
+ *     responses:
+ *       200:
+ *         description: Successfully logged out
+ *       400:
+ *         description: User ID is required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "User id is required"
+ *       404:
+ *         description: User not found in the online users list
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Internal server error"
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ */
+authRoutes.get("/logout/:id", logOut);
+
+export default authRoutes;

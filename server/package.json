@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,12 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "chalk": "^5.4.1",
     "chat-app-backend": "file:",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
-    "express": "^4.17.2",
-    "mongoose": "^6.2.1",
+    "express": "^4.21.2",
+    "mongoose": "^8.10.0",
     "nodemon": "^2.0.15",
-    "socket.io": "^4.4.1"
+    "socket.io": "^4.8.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
