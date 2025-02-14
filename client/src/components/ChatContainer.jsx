@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import ChatInput from "./ChatInput";
 import Logout from "./Logout";
@@ -13,7 +13,7 @@ export default function ChatContainer({ currentChat, socket }) {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      const storedData = localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY);
+      const storedData = localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY);
       if (storedData) {
         const data = JSON.parse(storedData);
         if (data && currentChat) {
@@ -38,7 +38,7 @@ export default function ChatContainer({ currentChat, socket }) {
     const getCurrentChat = async () => {
       if (currentChat) {
         await JSON.parse(
-          localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+          localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY)
         )._id;
       }
     };
@@ -47,7 +47,7 @@ export default function ChatContainer({ currentChat, socket }) {
 
   const handleSendMsg = async (msg) => {
     const data = await JSON.parse(
-      localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+      localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY)
     );
     socket.current.emit("send-msg", {
       to: currentChat._id,

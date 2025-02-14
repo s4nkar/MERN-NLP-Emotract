@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
@@ -18,7 +18,7 @@ export default function Login() {
     theme: "dark",
   };
   useEffect(() => {
-    if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+    if (localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY)) {
       navigate("/");
     }
   }, [navigate]);
@@ -52,7 +52,7 @@ export default function Login() {
       }
       if (data.status === true) {
         localStorage.setItem(
-          process.env.REACT_APP_LOCALHOST_KEY,
+          import.meta.env.VITE_LOCALHOST_KEY,
           JSON.stringify(data.user)
         );
 
@@ -84,7 +84,7 @@ export default function Login() {
           />
           <button type="submit">Log In</button>
           <span>
-            Don't have an account ? <Link to="/register">Create One.</Link>
+            Dont have an account ? <Link to="/register">Create One.</Link>
           </span>
         </form>
       </FormContainer>

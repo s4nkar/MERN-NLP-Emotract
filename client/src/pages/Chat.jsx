@@ -17,7 +17,7 @@ export default function Chat() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const storedData = localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY);
+      const storedData = localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY);
       
       if (!storedData) {
         navigate("/login");
