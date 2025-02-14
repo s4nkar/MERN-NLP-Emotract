@@ -1,4 +1,6 @@
-
+server: nodemon index.js
+nlp: uvicorn main:app --reload
+client: npm start
 
 NLP
     cd nlp
