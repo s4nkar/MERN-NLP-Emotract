@@ -1,0 +1,9 @@
+
+
+NLP
+    cd nlp
+    ./venv/scripts/activate
+    uvicorn main:app --reload
+
+    (optional)
+    pip install -r requirements.txt

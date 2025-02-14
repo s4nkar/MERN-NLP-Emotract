@@ -1,0 +1,23 @@
+# Virtual Environment
+/venv
+
+# Model and Large File Directories
+/bert
+/lr
+/rf
+/roberta
+
+# Python Cache & Compiled Files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Logs and Temporary Files
+*.log
+.DS_Store
+*.swp
+*.swo
