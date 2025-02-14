@@ -6,6 +6,7 @@
 /lr
 /rf
 /roberta
+/client____
 
 # Python Cache & Compiled Files
 __pycache__/
