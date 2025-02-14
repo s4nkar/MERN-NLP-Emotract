@@ -7,7 +7,7 @@ export default function Welcome() {
   useEffect(() => {
     const fetchUserName = async () => {
       try {
-        const storedData = localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY);
+        const storedData = localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY);
         if (storedData) {
           const data = JSON.parse(storedData);
           setUserName(data.username);

@@ -9,7 +9,7 @@ export default function Contacts({ contacts, changeChat }) {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const storedData = localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY);
+      const storedData = localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY);
       if (storedData) {
         try {
           const data = JSON.parse(storedData);
