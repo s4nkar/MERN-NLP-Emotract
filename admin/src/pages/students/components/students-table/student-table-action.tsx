@@ -1,6 +1,6 @@
-import PopupModal from '@/components/shared/popup-modal';
 import TableSearchInput from '@/components/shared/table-search-input';
-import StudentCreateForm from '../student-forms/student-create-form';
+// import PopupModal from '@/components/shared/popup-modal';
+// import StudentCreateForm from '../student-forms/student-create-form';
 
 export default function StudentTableActions() {
   return (
@@ -8,11 +8,11 @@ export default function StudentTableActions() {
       <div className="flex flex-1 gap-4">
         <TableSearchInput placeholder="Search People Here" />
       </div>
-      <div className="flex gap-3">
+      {/* <div className="flex gap-3">
         <PopupModal
           renderModal={(onClose) => <StudentCreateForm modalClose={onClose} />}
         />
-      </div>
+      </div> */}
     </div>
   );
 }
