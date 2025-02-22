@@ -1,33 +1,92 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    min: 3,
-    max: 20,
-    unique: true,
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      min: 3,
+      max: 20,
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      max: 50,
+    },
+    password: {
+      type: String,
+      required: true,
+      min: 8,
+    },
+    aadhaar_number: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    firstname: {
+      type: String,
+      required: true,
+    },
+    lastname: {
+      type: String,
+      required: true,
+    },
+    parent_email: {
+      type: String,
+      required: false,
+    },
+    age: {
+      type: Number,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    imageUrl: {
+      type: String,
+      default: "",
+    },
+    age_verified: {
+      type: Boolean,
+      default: false,
+    },
+    is_active: {
+      type: Boolean,
+      default: true,
+    },
+    is_flagged: {
+      type: Boolean,
+      default: false,
+    },
+    flag_count: {
+      type: Number,
+      default: 0,
+    },
+    created_at: {
+      type: Date,
+      default: Date.now,
+    },
+    updated_at: {
+      type: Date,
+      default: Date.now,
+    },
+    isAvatarImageSet: {
+      type: Boolean,
+      default: false,
+    },
+    avatarImage: {
+      type: String,
+      default: "",
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    max: 50,
-  },
-  password: {
-    type: String,
-    required: true,
-    min: 8,
-  },
-  isAvatarImageSet: {
-    type: Boolean,
-    default: false,
-  },
-  avatarImage: {
-    type: String,
-    default: "",
-  },
-});
+  {
+    timestamps: { createdAt: "created_at", updatedAt: "updated_at" }, // Auto-manages created_at & updated_at
+  }
+);
 
 const User = mongoose.model("Users", userSchema);
 

@@ -26,6 +26,7 @@ export default function Register() {
     lastname: "",
     parent_email: "",
     age: "",
+    phone: "",
   });
 
   useEffect(() => {
@@ -35,8 +36,27 @@ export default function Register() {
   }, [navigate]);
 
   const handleChange = (event) => {
-    setValues({ ...values, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+  
+    if (name === "age") {
+      const dob = new Date(value); // Get selected date
+      if (isNaN(dob.getTime())) return; // Prevent NaN values if invalid date
+  
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+  
+      // Adjust if birthday hasn't occurred yet this year
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+  
+      setValues((prevValues) => ({ ...prevValues, [name]: age }));
+    } else {
+      setValues((prevValues) => ({ ...prevValues, [name]: value }));
+    }
   };
+  
 
   // Function to validate the
   // Aadhaar Number  
@@ -96,12 +116,8 @@ export default function Register() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (handleValidation()) {
-      const { email, username, password } = values;
-      const { data } = await axios.post(registerRoute, {
-        username,
-        email,
-        password,
-      });
+      // const { email, username, password } = values;
+      const { data } = await axios.post(registerRoute, values);
 
       if (data.status === false) {
         toast.error(data.msg, toastOptions);
@@ -192,7 +208,7 @@ export default function Register() {
           <input
             type="number"
             placeholder="Mobile No"
-            name="number"
+            name="phone"
             onChange={(e) => handleChange(e)}
             />
           </div>
