@@ -79,7 +79,6 @@ export const setAvatar = async (req, res, next) => {
   }
 };
 
-
 export const logOut = (req, res, next) => {
   try {
     if (!req.params.id) return res.json({ msg: "User id is required " });

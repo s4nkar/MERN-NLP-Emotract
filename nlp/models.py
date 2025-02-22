@@ -92,3 +92,14 @@ def rf_model(text) -> str:
         print(f"Text: {text}\nPredicted Emotion: {pred}\nProbabilities: {prob}\n")
 
     return emotions[label]
+
+# text = "test message"
+# b = bert_model(text)
+# # RoBERTa MODEL
+# r = roberta_model(text)
+# # LR MODEL
+# l = lr_model(text)
+# # RF MODEL
+# rf = rf_model(text)
+
+# print(b, r, l, rf)

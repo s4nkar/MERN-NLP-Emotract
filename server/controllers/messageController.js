@@ -29,7 +29,6 @@ export const getMessages = async (req, res, next) => {
   }
 };
 
-
 export const addMessage = async (req, res, next) => {
   try {
     // Input validation
