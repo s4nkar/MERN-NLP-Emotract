@@ -21,6 +21,11 @@ export default function Register() {
     email: "",
     password: "",
     confirmPassword: "",
+    aadhaar_number: "",
+    firstname: "",
+    lastname: "",
+    parent_email: "",
+    age: "",
   });
 
   useEffect(() => {
@@ -33,8 +38,32 @@ export default function Register() {
     setValues({ ...values, [event.target.name]: event.target.value });
   };
 
+  // Function to validate the
+  // Aadhaar Number  
+  function isValid_Aadhaar_Number(aadhaar_number){
+  
+      // Regex to check valid
+      // aadhaar_number  
+      let regex = new RegExp(/^[2-9]{1}[0-9]{3}\s[0-9]{4}\s[0-9]{4}$/);
+  
+      // if aadhaar_number 
+      // is empty return false
+      if (aadhaar_number == null) {
+          return "false";
+      }
+  
+      // Return true if the aadhaar_number
+      // matched the ReGex
+      if (regex.test(aadhaar_number) == true) {
+          return "true";
+      }
+      else {
+          return "false";
+      }
+  }
+
   const handleValidation = () => {
-    const { password, confirmPassword, username, email } = values;
+    const { password, confirmPassword, username, email, aadhaar_number } = values;
     if (password !== confirmPassword) {
       toast.error(
         "Password and confirm password should be same.",
@@ -55,6 +84,9 @@ export default function Register() {
       return false;
     } else if (email === "") {
       toast.error("Email is required.", toastOptions);
+      return false;
+    } else if(isValid_Aadhaar_Number(aadhaar_number) === false){
+      toast.error("Aadhaar number is Invalid!", toastOptions);
       return false;
     }
 
@@ -89,21 +121,42 @@ export default function Register() {
       <FormContainer>
         <form action="" onSubmit={(event) => handleSubmit(event)}>
           <div className="brand">
-            <img src={Logo} alt="logo" />
-            <h1>Emotract v1</h1>
+            <img className="w-15" src={Logo} alt="logo" />
+            <h1 className="text-red-700">Emotract v1</h1>
           </div>
+          <div className="flex">
+          <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="firstname"
+            name="firstname"
+            onChange={(e) => handleChange(e)}
+          />
+          <input
+            type="text"
+            placeholder="lastname"
+            name="lastname"
+            onChange={(e) => handleChange(e)}
+          />
+          </div>
+          <div className="flex gap-2">
           <input
             type="text"
             placeholder="Username"
             name="username"
             onChange={(e) => handleChange(e)}
-          />
+            />
+          </div>
+          <div className="flex gap-2">
           <input
             type="email"
             placeholder="Email"
             name="email"
             onChange={(e) => handleChange(e)}
           />
+          </div>
+          <div className="flex gap-2">
           <input
             type="password"
             placeholder="Password"
@@ -116,8 +169,39 @@ export default function Register() {
             name="confirmPassword"
             onChange={(e) => handleChange(e)}
           />
-          <button type="submit">Create User</button>
-          <span>
+          </div>
+
+          {/* Right col  */}
+          </div>
+          <div className="border-l-1 ml-2 pl-2 border-[#7a73ff] flex flex-col gap-2">
+          <input
+            type="text"
+            placeholder="Aadhaar Number"
+            name="aadhaar_number"
+            onChange={(e) => handleChange(e)}
+          />
+          <input
+            type="email"
+            placeholder="Parent Email"
+            name="parent_email"
+            onChange={(e) => handleChange(e)}
+          />
+
+          <input type="date" name="age" onChange={(e) => handleChange(e)} id="" />
+          <div className="flex gap-2">
+          <input
+            type="number"
+            placeholder="Mobile No"
+            name="number"
+            onChange={(e) => handleChange(e)}
+            />
+          </div>
+          </div>
+          </div>
+          <div className="flex justify-end">
+          <button type="submit" className="font-light text-[1px]">Create User</button>
+          </div>
+          <span className="text-[12px]">
             Already have an account ? <Link to="/login">Login.</Link>
           </span>
         </form>
@@ -174,12 +258,12 @@ const FormContainer = styled.div`
   button {
     background-color: #4e0eff;
     color: white;
-    padding: 1rem 2rem;
+    padding: .5rem 1rem;
     border: none;
     font-weight: bold;
     cursor: pointer;
     border-radius: 0.4rem;
-    font-size: 1rem;
+    font-size: .8rem;
     text-transform: uppercase;
     &:hover {
       background-color: #4e0eff;

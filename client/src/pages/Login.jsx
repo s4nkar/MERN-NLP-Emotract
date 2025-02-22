@@ -64,9 +64,9 @@ export default function Login() {
   return (
     <>
       <FormContainer>
-        <form action="" onSubmit={(event) => handleSubmit(event)}>
+        <form action="" className="min-w-1/3" onSubmit={(event) => handleSubmit(event)}>
           <div className="brand">
-            <img src={Logo}  alt="logo" />
+            <img src={Logo} className="w-15"  alt="logo" />
             <h1 className="text-red-200">Emotract v1</h1>
           </div>
           <input
@@ -83,7 +83,7 @@ export default function Login() {
             onChange={(e) => handleChange(e)}
           />
           <button type="submit">Log In</button>
-          <span>
+          <span className="text-[12px]">
             Dont have an account ? <Link to="/register">Create One.</Link>
           </span>
         </form>
