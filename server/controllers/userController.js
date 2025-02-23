@@ -21,23 +21,57 @@ export const login = async (req, res, next) => {
 
 export const register = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
-    const usernameCheck = await User.findOne({ username });
-    if (usernameCheck)
-      return res.json({ msg: "Username already used", status: false });
-    const emailCheck = await User.findOne({ email });
-    if (emailCheck)
-      return res.json({ msg: "Email already used", status: false });
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const { username, email, password, aadhaar_number, firstname, lastname, parent_email, age, phone } = req.body;
+    
+    const ageVerified = parseInt(age) >= 18;
+    
+    // Efficient single query to check existing user data
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }, { phone }],
+    });
+
+    if (existingUser) {
+      let msg = "User already exists";
+      if (existingUser.username === username) msg = "Username already used";
+      else if (existingUser.email === email) msg = "Email already used";
+      else if (existingUser.phone === phone) msg = "Phone number already used";
+
+      return res.status(409).json({ msg, status: false });
+    }
+
+    // Hash password securely
+    let hashedPassword;
+    try {
+      hashedPassword = await bcrypt.hash(password, 10);
+    } catch (error) {
+      return res.status(500).json({ msg: "Error hashing password", status: false });
+    }
+
+    // Create new user
     const user = await User.create({
       email,
       username,
       password: hashedPassword,
+      aadhaar_number,
+      firstname,
+      lastname,
+      parent_email,
+      age: parseInt(age),
+      phone,
+      imageUrl: "",
+      age_verified: ageVerified,
+      is_active: true,
+      is_flagged: false,
+      flag_count: 0,
     });
-    delete user.password;
-    return res.json({ status: true, user });
-  } catch (ex) {
-    next(ex);
+
+    // Convert to object and remove password before sending response
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    return res.status(201).json({ status: true, user: userResponse });
+  } catch (error) {
+    next(error);
   }
 };
 

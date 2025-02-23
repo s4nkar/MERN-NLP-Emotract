@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Employee } from '@/constants/data';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { BarChart2, Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from '@/routes/hooks';
 import { useState } from 'react';
 
@@ -40,7 +40,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
+          <DropdownMenuItem
+            onClick={() => router.push(`/analytics/${data.id}`)}
+          >
+            <BarChart2 className="mr-2 h-4 w-4" /> Analytics
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/dashboard/user/${data.id}`)}
           >
