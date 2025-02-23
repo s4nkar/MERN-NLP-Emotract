@@ -13,7 +13,7 @@ export default function Contacts({ contacts, changeChat }) {
       if (storedData) {
         try {
           const data = JSON.parse(storedData);
-          setCurrentUserName(data.username);
+          setCurrentUserName(data.firstname + " "+ data.lastname);
           setCurrentUserImage(data.avatarImage);
         } catch (error) {
           console.error("Error parsing user data:", error);
@@ -38,6 +38,9 @@ export default function Contacts({ contacts, changeChat }) {
             <h3>Emotract v1</h3>
           </div>
           <div className="contacts">
+            <div className="w-[90%] border-b border-gray-400 mt-1">
+              <input type="text" placeholder="Search..." className="placeholder:text-gray-400 w-full p-2 focus:outline-none text-white" name="" id="" />
+            </div>
             {contacts.map((contact, index) => {
               return (
                 <div
@@ -49,29 +52,38 @@ export default function Contacts({ contacts, changeChat }) {
                 >
                   <div className="avatar">
                     <img
-                      src={`data:image/svg+xml;base64,${contact.avatarImage}`}
+                      src={`${contact.avatarImage}`}
+                      className="w-12 h-12"
                       alt=""
                     />
                   </div>
-                  <div className="username">
+                  <div className="username flex flex-col gap-0">
                     <h3>{contact.username}</h3>
+                    <span className="text-gray-500 text-sm">Last message</span>
                   </div>
                 </div>
               );
             })}
           </div>
-          <div className="current-user">
+          <div className="flex justify-between items-center pl-[0.4rem]">
+          <div className="flex">
             <div className="avatar">
               <img
                 style={{ mixBlendMode: "saturation" }}
+                className="w-12 h-12"
                 src={`${currentUserImage}`}
                 alt="avatar"
               />
             </div>
             <div className="username">
-              <h2>{currentUserName}</h2>
+              <h2 className="font-semibold text-white capitalize ml-2">{currentUserName}</h2>
+              <span className="text-green-500 text-sm ml-2">Online</span>
             </div>
           </div>
+          <div>
+            <button>Logout</button>
+          </div>
+            </div>
         </Container>
       )}
     </>
@@ -79,7 +91,7 @@ export default function Contacts({ contacts, changeChat }) {
 }
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 10% 75% 15%;
+  grid-template-rows: 10% 90%;
   overflow: hidden;
   background-color: #080420;
   .brand {
@@ -100,7 +112,7 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     overflow: auto;
-    gap: 0.8rem;
+    gap: 0.4rem;
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
@@ -111,7 +123,7 @@ const Container = styled.div`
     }
     .contact {
       background-color: #ffffff34;
-      min-height: 5rem;
+      min-height: 2rem;
       cursor: pointer;
       width: 90%;
       border-radius: 0.2rem;
@@ -120,11 +132,6 @@ const Container = styled.div`
       gap: 1rem;
       align-items: center;
       transition: 0.5s ease-in-out;
-      .avatar {
-        img {
-          height: 3rem;
-        }
-      }
       .username {
         h3 {
           color: white;
@@ -139,7 +146,7 @@ const Container = styled.div`
   .current-user {
     background-color: #0d0d30;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 2rem;
     .avatar {
