@@ -1,0 +1,44 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Django static files and media
+staticfiles/
+media/
+
+# Local environment settings
+.env
+
+# Database
+db.sqlite3
+
+# venv (Virtual Environment)
+env/
+venv/
+ENV/
+ENV.bak/
+*.env
+
+# macOS system files
+.DS_Store
+
+# Log files
+*.log
+
+# Ignore migrations
+*/migrations/*.py
+*/migrations/*.pyc
+
+# Ignore IDE configuration files (optional)
+.vscode/
+.idea/
+*.swp
+
+# Django cache files
+*.cache
+
+.codegpt

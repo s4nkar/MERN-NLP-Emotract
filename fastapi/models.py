@@ -75,9 +75,9 @@ def lr_model(text) -> str:
 
 def rf_model(text) -> str:
     rf_model = joblib.load('rf/rf_model.pkl')  # Load the Random Forest model
-    vectorizer = joblib.load('rf/vectorizer.pkl')  # Load the TF-IDF vectorizer
+    vectorizer = joblib.load('rf/vectorizer.pkl')  # Load the TF-IDF vectorizer 
 
-    new_features = vectorizer.transform([text])
+    new_features = vectorizer.transform([text]) 
 
     # Predict using Random Forest
     rf_predictions = rf_model.predict(new_features)

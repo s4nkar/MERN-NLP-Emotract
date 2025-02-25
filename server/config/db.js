@@ -3,10 +3,8 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    // Use host.docker.internal to connect to the MongoDB running on the host
+    await mongoose.connect(process.env.MONGO_URL || "mongodb://host.docker.internal:27017/chat");
     console.log("DB Connection Successful");
   } catch (err) {
     console.error("DB Connection Unsuccessful", err.message);

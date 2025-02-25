@@ -1,0 +1,77 @@
+# version: '3.8'
+services:
+
+  # React Frontend Service (User)
+  user:
+    build:
+      context: ./user
+    ports:
+      - "5173:5173"  # Default Vite port
+    environment:
+      - CHOKIDAR_USEPOLLING=true # create-ui-app <= 5.x
+      - WATCHPACK_POLLING=true # create-ui-app >= 5.x
+      - FAST_REFRESH=false
+      - WDS_SOCKET_PORT=5173 # The mapped port on your host machine
+      - VITE_BACKEND_URL=http://backend:5000  # Adjusted for Vite
+    depends_on:
+      - backend
+    command: ["npm", "run", "dev", "--", "--port", "5173"]  # Run the dev server
+    working_dir: /app  # Set the working directory to /app
+    volumes:
+    - ./user/src:/app/src
+
+  # React Frontend Service (Admin)
+  admin:
+    build:
+      context: ./admin
+    ports:
+      - "5174:5174"  # Separate port for Admin Vite
+    environment:
+      - CHOKIDAR_USEPOLLING=true # create-ui-app <= 5.x
+      - WATCHPACK_POLLING=true # create-ui-app >= 5.x
+      - FAST_REFRESH=false
+      - WDS_SOCKET_PORT=5174
+      - VITE_BACKEND_URL=http://backend:5000  # Adjusted for Vite
+    depends_on:
+      - backend
+    # command: [ "serve", "-s", "dist", "-l", "5174" ]  # Serve production build from dist folder
+    command: ["npm", "run", "dev", "--", "--port", "5174"]  # Serve production build from dist folder
+    working_dir: /app  # Set the working directory to /app
+    volumes:
+      - ./admin/src:/app/src
+
+    # Express Backend Service
+  backend:
+    build:
+      context: ./server
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URL=mongodb://host.docker.internal:27017/chat  # Point to local MongoDB
+      - NODE_ENV=development
+      - FASTAPI_URL=http://fastapi:8000  # FastAPI URL for backend
+    depends_on:
+      - fastapi
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    command: ["npm", "start"]
+    working_dir: /app
+
+  # FastAPI Backend Service
+  fastapi:
+    build:
+      context: ./fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      - BACKEND_ENV=development
+    volumes:
+      - ./fastapi:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    restart: always
+    working_dir: /app
+  
+
+volumes:
+  db_data:

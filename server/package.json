@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon -L index.js --ignore './tests'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -23,5 +23,8 @@
     "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
+  },
+  "nodemonConfig": {
+    "legacyWatch": true
   }
 }
