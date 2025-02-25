@@ -1,9 +1,23 @@
-server: nodemon index.js
-nlp: uvicorn main:app --reload
-client: npm start
+RUN Auto
+    docker-compose up --build
 
-NLP
-    cd nlp
+RUN Manual
+    server: nodemon index.js
+    fastapi: uvicorn main:app --reload
+    user: npm run dev
+    admin: npm run dev
+
+Dev URL
+    user React Js: http://localhost:5173
+    admin React Js: http://localhost:5174
+    backend Express Js: http://localhost:5000/
+    NLP Fastapi: http://localhost:8000/
+
+docker-compose up
+docker-compose down
+
+fastapi
+    cd fastapi
     ./venv/scripts/activate
     uvicorn main:app --reload
 

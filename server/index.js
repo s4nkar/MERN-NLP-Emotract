@@ -21,6 +21,10 @@ app.use(logger);
 
 // Connect to MongoDB
 connectDB();
+
+app.get("/", (req, res) => {
+  res.redirect("/api-docs");
+});
  
 // API Routes
 app.use("/api/auth", authRoutes);

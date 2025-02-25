@@ -17,7 +17,7 @@ logger = logging.getLogger("uvicorn")
 @app.get("/")
 def read_root():
     logger.debug("Root endpoint is being accessed.")
-    return {"message": "Hello World"}
+    return "Fast Api Server Running  Dev mode ..." 
 
 @app.post("/analyze/")
 async def analyze_sentiment(request: TextRequest):
