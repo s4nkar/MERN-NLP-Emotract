@@ -76,15 +76,18 @@ export default function Login() {
             onChange={(e) => handleChange(e)}
             min="3"
           />
+          <label htmlFor="">
           <input
             type="password"
             placeholder="Password"
             name="password"
             onChange={(e) => handleChange(e)}
           />
+          <Link to="/forgot-password" className="text-white text-sm mt-2">Forgot your password?</Link>
+          </label>
           <button type="submit">Log In</button>
-          <span className="text-[12px]">
-            Dont have an account ? <Link to="/register">Create One.</Link>
+          <span className="text-[12px] flex flex-col gap-2">
+            <span>Dont have an account ? <Link to="/register">Create One.</Link></span>
           </span>
         </form>
       </FormContainer>

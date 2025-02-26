@@ -9,6 +9,16 @@ const userSchema = new mongoose.Schema(
       max: 20,
       unique: true,
     },
+    device_id: {
+      type: String,
+      required: false,
+      default: "NA",
+    },
+    clerk_id: {
+      type: String,
+      required: false,
+      default: "NA",
+    },
     email: {
       type: String,
       required: true,
@@ -58,6 +68,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    is_online: {
+      type: Boolean,
+      default: false,
+    },
     is_flagged: {
       type: Boolean,
       default: false,
@@ -65,6 +79,10 @@ const userSchema = new mongoose.Schema(
     flag_count: {
       type: Number,
       default: 0,
+    },
+    last_active: {
+      type: Date,
+      default: Date.now,
     },
     created_at: {
       type: Date,

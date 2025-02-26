@@ -1,5 +1,8 @@
-import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
+import { sendResetEmail } from "../config/email.js";
+import User from "../models/User.js";
+import PasswordReset from "../models/PasswordReset.js";
 
 export const login = async (req, res, next) => {
   try {
@@ -60,9 +63,6 @@ export const register = async (req, res, next) => {
       phone,
       imageUrl: "",
       age_verified: ageVerified,
-      is_active: true,
-      is_flagged: false,
-      flag_count: 0,
     });
 
     // Convert to object and remove password before sending response
@@ -112,6 +112,53 @@ export const setAvatar = async (req, res, next) => {
     next(ex); // Passing any errors to the next middleware (usually an error handler)
   }
 };
+
+export const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ status: false, message: "User not found" });
+
+    // Generate secure reset token
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = Date.now() + 3600000; // Token expires in 1 hour
+
+    // Store token in database (Ensure PasswordReset model exists)
+    await PasswordReset.create({ userId: user._id, token, expiresAt });
+
+    // Send reset email
+    await sendResetEmail(user.email, token);
+
+    res.json({ status: true, message: "Password reset email sent" });
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  const resetRequest = await PasswordReset.findOne({ token });
+
+  if (!resetRequest || resetRequest.expiresAt < Date.now()) {
+    return res.status(400).json({ status: false, message: "Invalid or expired token" });
+  }
+
+  const user = await User.findById(resetRequest.userId);
+  if (!user) return res.status(404).json({ status: false, message: "User not found" });
+
+  // Update password
+  user.password = await bcrypt.hash(password, 10);
+  await user.save();
+
+  // Remove the used reset token from DB
+  await PasswordReset.deleteOne({ _id: resetRequest._id });
+
+  res.json({ status: true, message: "Password reset successful" });
+}
 
 export const logOut = (req, res, next) => {
   try {

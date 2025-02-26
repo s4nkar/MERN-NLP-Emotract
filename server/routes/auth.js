@@ -3,7 +3,9 @@ import {
   register, 
   getAllUsers, 
   setAvatar, 
-  logOut 
+  logOut, 
+  forgotPassword,
+  resetPassword
 } from "../controllers/userController.js";
 import express from "express";
 
@@ -268,6 +270,162 @@ authRoutes.get("/allusers/:id", getAllUsers);
  *                   example: false
  */
 authRoutes.post("/setavatar/:id", setAvatar);
+
+/**
+ * @swagger
+ * /api/auth/forgot-password:
+ *   post:
+ *     summary: Request a password reset
+ *     description: Sends a password reset email with a token if the user exists.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: The email address of the user requesting a password reset.
+ *                 example: "user@example.com"
+ *     responses:
+ *       200:
+ *         description: Password reset email sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Password reset email sent"
+ *                 status:
+ *                   type: boolean
+ *                   example: true
+ *       400:
+ *         description: Invalid email format or missing email
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Invalid email"
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "User not found"
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Internal server error"
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ */
+authRoutes.post("/forgot-password", forgotPassword);
+
+/**
+ * @swagger
+ * /api/auth/reset-password/{token}:
+ *   post:
+ *     summary: Reset the user's password
+ *     description: Allows a user to reset their password using a valid reset token.
+ *     parameters:
+ *       - name: token
+ *         in: path
+ *         description: Password reset token received via email.
+ *         required: true
+ *         schema:
+ *           type: string
+ *         example: "abcd1234efgh5678"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: The new password to set.
+ *                 example: "NewSecurePassword123!"
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Password reset successfully"
+ *                 status:
+ *                   type: boolean
+ *                   example: true
+ *       400:
+ *         description: Invalid token or missing password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Invalid or expired token"
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "User not found"
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: "Internal server error"
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ */
+authRoutes.post("/reset-password/:token", resetPassword);
 
 /**
  * @swagger

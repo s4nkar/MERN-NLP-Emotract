@@ -1,5 +1,5 @@
 RUN Auto
-    docker-compose up --build
+    docker-compose up 
 
 RUN Manual
     server: nodemon index.js
@@ -13,7 +13,8 @@ Dev URL
     backend Express Js: http://localhost:5000/
     NLP Fastapi: http://localhost:8000/
 
-docker-compose up
+
+docker-compose up --build
 docker-compose down
 
 fastapi
