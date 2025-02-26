@@ -1,4 +1,4 @@
-import Messages from "../models/messageModel.js"
+import Messages from "../models/Messages.js"
 import analyzeMessage from "../utils/analyze.js";
 
 export const getMessages = async (req, res, next) => {
