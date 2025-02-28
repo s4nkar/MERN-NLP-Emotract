@@ -59,7 +59,7 @@ export default function Contacts({ contacts, changeChat }) {
                   <div className="avatar">
                     <img
                       src={contact.avatarImage ? contact.avatarImage : fallBackImage}
-                      className="w-12 h-12 rounded-full"
+                      className="w-12 h-12 rounded-full border-1 border-gray-400"
                       alt=""
                     />
                   </div>
@@ -118,7 +118,7 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     overflow: auto;
-    gap: 0.4rem;
+    gap: 0.2rem;
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
@@ -145,7 +145,7 @@ const Container = styled.div`
       }
     }
     .selected {
-      background-color: #9a86f3;
+      background-color: #1f193a;
     }
   }
 

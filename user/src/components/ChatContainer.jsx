@@ -35,12 +35,10 @@ export default function ChatContainer({ currentChat, socket }) {
 
   useEffect(() => {
     const getCurrentChat = async () => {
-      if (currentChat) {
-        await JSON.parse(
-          localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY)
-        )._id;
-      }
+      if (currentChat) { 
+        await JSON.parse(localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY))._id;}
     };
+
     getCurrentChat();
   }, [currentChat]);
 
@@ -81,21 +79,32 @@ export default function ChatContainer({ currentChat, socket }) {
   }, [messages]);
 
   return (
-    <Container>
-      <div className="chat-header">
-        <div className="user-details">
-          <div className="avatar">
+    <Container className="border-l-2 border-[#3c3648]">
+      <div className="chat-header bg-[#1f193a]">
+        <div className="user-details flex gap-2 p-2 ">
+          <div className="avatar flex justify-start">
             <img
               src={`${currentChat.avatarImage}`}
-              alt=""
+              alt="user image"
+              className="w-12 h-12 rounded-full"
             />
           </div>
-          <div className="username">
-            <h3>{currentChat.username}</h3>
+          <div className="username flex flex-col justify-start">
+            <h3 className="text-white mt-1">{currentChat.username}</h3>
+            {currentChat.is_online ?
+            (
+              <span className="text-green-600 text-sm">Online</span>
+            ):(
+              <span className="text-red-700 text-sm">Offline</span>
+            )}
           </div>
         </div>
       </div>
       <div className="chat-messages">
+      {/* Encryption message */}
+      <div className="text-yellow-700 p-3 rounded-lg text-center text-sm w-full mt-2">
+        🔒 Messages you send to this chat and calls are now secured with end-to-end encryption. Tap for more info.
+      </div>
         {messages.map((message) => {
           return (
             <div ref={scrollRef} key={uuidv4()}>
@@ -125,32 +134,12 @@ const Container = styled.div`
   @media screen and (min-width: 720px) and (max-width: 1080px) {
     grid-template-rows: 15% 70% 15%;
   }
-  .chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 2rem;
-    .user-details {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      .avatar {
-        img {
-          height: 3rem;
-        }
-      }
-      .username {
-        h3 {
-          color: white;
-        }
-      }
-    }
-  }
+  
   .chat-messages {
     padding: 1rem 2rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: .4rem;
     overflow: auto;
     &::-webkit-scrollbar {
       width: 0.2rem;
@@ -164,11 +153,12 @@ const Container = styled.div`
       display: flex;
       align-items: center;
       .content {
-        max-width: 40%;
+        max-width: 60%;
         overflow-wrap: break-word;
-        padding: 1rem;
-        font-size: 1.1rem;
-        border-radius: 1rem;
+        padding: .5rem .8rem;
+        font-size: 1rem;
+        font-weight:300;
+        border-radius: .6rem;
         color: #d1d1d1;
         @media screen and (min-width: 720px) and (max-width: 1080px) {
           max-width: 70%;
