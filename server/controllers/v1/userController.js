@@ -1,24 +1,53 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { sendResetEmail } from "../config/email.js";
-import User from "../models/User.js";
-import PasswordReset from "../models/PasswordReset.js";
+import jwt from 'jsonwebtoken';
+import { sendResetEmail } from "../../config/email.js";
+import User from "../../models/User.js";
+import PasswordReset from "../../models/PasswordReset.js";
+import { client } from "../../index.js";
+
 
 export const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
+    
+    // Check if user exists
     const user = await User.findOne({ username });
-    if (!user)
-      return res.json({ msg: "Incorrect Username or Password", status: false });
-      
+
+    if (!user) 
+      return res.status(401).json({ message: "Incorrect Username", status: false });
+
+    // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid)
-      return res.json({ msg: "Incorrect Username or Password", status: false });
-      
-    delete user.password;
-    return res.json({ status: true, user });
-  } catch (ex) {
-    next(ex);
+    if (!isPasswordValid) 
+      return res.status(401).json({ message: "Incorrect Username or Password", status: false });
+
+    // Generate Tokens
+    const accessToken = jwt.sign({ userId: user._id }, "ACCESS_SECRET", { expiresIn: "15m" });
+    const refreshToken = jwt.sign({ userId: user._id }, "REFRESH_SECRET", { expiresIn: "7d" });
+
+    if (!client.isOpen) {
+      await client.connect();
+    }
+    
+    // Store refresh token in Redis
+    const response = await client.set(user._id.toString(), refreshToken, {
+        EX: 7 * 24 * 60 * 60,
+    })
+
+    if (response !== "OK") {
+      console.error("Error storing refresh token in Redis:", response);
+      return res.status(500).json({ message: "Error storing refresh token" });
+    }
+    
+    // Remove password field before sending user data
+    const userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
+
+    return res.json({ status: true, message: "Login Successful", user: userWithoutPassword, accessToken, refreshToken });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Internal Server Error", status: false });
   }
 };
 
@@ -160,12 +189,82 @@ export const resetPassword = async (req, res, next) => {
   res.json({ status: true, message: "Password reset successful" });
 }
 
-export const logOut = (req, res, next) => {
+export const refreshToken = async (req, res) => {
   try {
-    if (!req.params.id) return res.json({ msg: "User id is required " });
-    onlineUsers.delete(req.params.id);
-    return res.status(200).send();
-  } catch (ex) {
-    next(ex);
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(403).json({ message: "Refresh Token Required" });
+    }
+
+    // Verify Refresh Token
+    jwt.verify(refreshToken, "REFRESH_SECRET", async (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ message: "Invalid Refresh Token" });
+      }
+
+      // Check if the token is in Redis
+      client.get(decoded.userId, async (err, storedToken) => {
+        if (err) {
+          return res.status(500).json({ message: "Error accessing Redis" });
+        }
+        if (!storedToken || storedToken !== refreshToken) {
+          return res.status(403).json({ message: "Token invalid or expired" });
+        }
+
+        // Generate a new Access Token
+        const newAccessToken = jwt.sign({ userId: decoded.userId }, "ACCESS_SECRET", { expiresIn: "15m" });
+
+        // Optionally, you can also return a new refresh token here if needed
+        res.json({ accessToken: newAccessToken });
+      });
+    });
+  } catch (err) {
+    console.error(err); // Log the error for debugging
+    res.status(500).json({ message: "Server error" });
   }
 };
+
+export const logOut = async (req, res) => {
+  try {
+    const { userId } = req.body; // User ID from frontend
+
+    // Check if userId is provided
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // Remove the user from onlineUsers (in-memory store) if necessary
+    if (onlineUsers.has(userId)) {
+      onlineUsers.delete(userId); // Ensuring the user is removed from the online session tracking
+    }
+
+    // Ensure Redis client is connected
+    if (!client.isOpen) {
+      await client.connect();
+    }
+
+    // Log the Redis key to check if it exists
+    const tokenExists = await client.exists(userId);
+
+    // If the token doesn't exist, log it but continue the process
+    if (tokenExists === 0) {
+      console.log(`No active session found for user ${userId}`);
+      // You can choose to still log the user out, even though no session was found in Redis
+    }
+
+    // Remove the user's refresh token from Redis if it exists
+    if (tokenExists === 1) {
+      await client.del(userId); // Using await to ensure Redis command completes
+      console.log(`Removed user ${userId}'s session from Redis`);
+    }
+
+    // Respond with a success message, regardless of whether the session was found
+    res.status(200).json({ message: "Logged out successfully" });
+
+  } catch (err) {
+    console.error("Error during logout:", err); // Log the error for debugging
+    res.status(500).json({ message: "Server error during logout" });
+  }
+};
+
+

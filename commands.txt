@@ -2,10 +2,19 @@ RUN Auto
     docker-compose up 
 
 RUN Manual
-    server: nodemon index.js
-    fastapi: uvicorn main:app --reload
-    user: npm run dev
-    admin: npm run dev
+    server: 
+            cd server
+            npm start
+    fastapi:
+            cd fastapi
+            ./venv/scripts/activate
+            uvicorn main:app --reload
+    user: 
+        cd user
+        npm run dev
+    admin: 
+        cd admin
+        npm run dev
 
 Dev URL
     user React Js: http://localhost:5173
@@ -17,10 +26,6 @@ Dev URL
 docker-compose up --build
 docker-compose down
 
-fastapi
-    cd fastapi
-    ./venv/scripts/activate
-    uvicorn main:app --reload
 
-    (optional)
-    pip install -r requirements.txt
+(optional)
+pip install -r requirements.txt

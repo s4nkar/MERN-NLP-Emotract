@@ -11,7 +11,7 @@ const options = {
       description: 'A simple Express API for chatting',
     },
   },
-  apis: ['./routes/*.js'], // This will automatically pull doc comments from your route files
+  apis: ['./routes/v1/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

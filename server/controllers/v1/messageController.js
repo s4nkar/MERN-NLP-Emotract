@@ -1,5 +1,5 @@
-import Messages from "../models/Messages.js"
-import analyzeMessage from "../utils/analyze.js";
+import Messages from "../../models/Messages.js"
+import analyzeMessage from "../../utils/analyze.js";
 
 export const getMessages = async (req, res, next) => {
   try {
@@ -38,7 +38,7 @@ export const addMessage = async (req, res, next) => {
     }
 
     // get emotions from fast api 
-    const [bertEmotion, RobertaEmotion, lrEmotion, rfEmotion ] = analyzeMessage(message);
+    const [bertEmotion, RobertaEmotion, lrEmotion, rfEmotion ] = await analyzeMessage(message);
 
     // Create new message in the database
     const data = await Messages.create({

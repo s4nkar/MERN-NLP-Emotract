@@ -1,10 +1,10 @@
 import { 
     addMessage, 
     getMessages 
-} from "../controllers/messageController.js";
+} from "../../controllers/v1/messageController.js";
 import express from "express";
 
-const messageRoutes = express.Router();
+const v1MessageRoutes = express.Router();
 
 /**
  * @swagger
@@ -63,7 +63,7 @@ const messageRoutes = express.Router();
  *                   type: string
  *                   example: "Failed to add message to the database"
  */
-messageRoutes.post("/addmsg/", addMessage);
+v1MessageRoutes.post("/addmsg/", addMessage);
 
 /**
  * @swagger
@@ -125,6 +125,6 @@ messageRoutes.post("/addmsg/", addMessage);
  *                   type: string
  *                   example: "Internal server error"
  */
-messageRoutes.post("/getmsg/", getMessages);
+v1MessageRoutes.post("/getmsg/", getMessages);
 
-export default messageRoutes;
+export default v1MessageRoutes;

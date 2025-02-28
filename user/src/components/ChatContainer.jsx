@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import ChatInput from "./ChatInput";
-import Logout from "./Logout";
 import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function ChatContainer({ currentChat, socket }) {
   const [messages, setMessages] = useState([]);
@@ -18,7 +17,7 @@ export default function ChatContainer({ currentChat, socket }) {
         const data = JSON.parse(storedData);
         if (data && currentChat) {
           try {
-            const response = await axios.post(recieveMessageRoute, {
+            const response = await axiosInstance.post(recieveMessageRoute, {
               from: data._id,
               to: currentChat._id,
             });
@@ -54,7 +53,7 @@ export default function ChatContainer({ currentChat, socket }) {
       from: data._id,
       msg,
     });
-    await axios.post(sendMessageRoute, {
+    await axiosInstance.post(sendMessageRoute, {
       from: data._id,
       to: currentChat._id,
       message: msg,
@@ -95,7 +94,6 @@ export default function ChatContainer({ currentChat, socket }) {
             <h3>{currentChat.username}</h3>
           </div>
         </div>
-        <Logout />
       </div>
       <div className="chat-messages">
         {messages.map((message) => {

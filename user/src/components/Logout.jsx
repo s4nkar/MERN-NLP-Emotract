@@ -1,39 +1,43 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { BiPowerOff } from "react-icons/bi";
-import styled from "styled-components";
-import axios from "axios";
+import { BiLogOut } from "react-icons/bi";
 import { logoutRoute } from "../utils/APIRoutes";
+import axiosInstance from "../utils/axiosInstance";
+
 export default function Logout() {
   const navigate = useNavigate();
+
   const handleClick = async () => {
-    const id = await JSON.parse(
-      localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY)
-    )._id;
-    const data = await axios.get(`${logoutRoute}/${id}`);
-    if (data.status === 200) {
-      localStorage.clear();
+    try {
+      // Get user data from localStorage
+      const userData = localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY);
+      if (!userData) {
+        console.error("User not found in localStorage");
+        return;
+      }
+  
+      const userId = JSON.parse(userData)._id;
+  
+      // Send the logout request
+      const response = await axiosInstance.post(logoutRoute, { userId });
+  
+      // Clear tokens and user data from localStorage
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem(import.meta.env.VITE_LOCALHOST_KEY);
+  
+      // Navigate to the login page
       navigate("/login");
+    } catch (error) {
+      // Handle any errors
+      console.error("Logout error:", error);
+      alert("An error occurred while logging out. Please try again.");
     }
   };
+  
+
   return (
-    <Button onClick={handleClick}>
-      <BiPowerOff />
-    </Button>
+      <BiLogOut onClick={handleClick} className="w-5 h-5 text-white cursor-pointer" />
   );
 }
 
-const Button = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  background-color: #9a86f3;
-  border: none;
-  cursor: pointer;
-  svg {
-    font-size: 1.3rem;
-    color: #ebe7ff;
-  }
-`;

@@ -3,10 +3,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import styled from "styled-components";
-import { allUsersRoute, host } from "../utils/APIRoutes";
+import { allUsersRoute } from "../utils/APIRoutes";
 import ChatContainer from "../components/ChatContainer";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
+import axiosInstance, { host } from "../utils/axiosInstance";
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ export default function Chat() {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
           try {
-            const { data } = await axios.get(`${allUsersRoute}/${currentUser._id}`);
+            const { data } = await axiosInstance.get(`${allUsersRoute}/${currentUser._id}`);
             setContacts(data);
           } catch (error) {
             console.error("Error fetching contacts:", error);

@@ -5,11 +5,12 @@ import {
   setAvatar, 
   logOut, 
   forgotPassword,
-  resetPassword
-} from "../controllers/userController.js";
+  resetPassword,
+  refreshToken,
+} from "../../controllers/v1/userController.js";
 import express from "express";
 
-const authRoutes = express.Router();
+const v1AuthRoutes = express.Router();
 
 /**
  * @swagger
@@ -67,7 +68,7 @@ const authRoutes = express.Router();
  *                   type: boolean
  *                   example: false
  */
-authRoutes.post("/login", login);
+v1AuthRoutes.post("/login", login);
 
 /**
  * @swagger
@@ -140,7 +141,7 @@ authRoutes.post("/login", login);
  *                   type: boolean
  *                   example: false
  */
-authRoutes.post("/register", register);
+v1AuthRoutes.post("/register", register);
 
 /**
  * @swagger
@@ -189,7 +190,7 @@ authRoutes.post("/register", register);
  *                   type: boolean
  *                   example: false
  */
-authRoutes.get("/allusers/:id", getAllUsers);
+v1AuthRoutes.get("/allusers/:id", getAllUsers);
 
 /**
  * @swagger
@@ -269,7 +270,7 @@ authRoutes.get("/allusers/:id", getAllUsers);
  *                   type: boolean
  *                   example: false
  */
-authRoutes.post("/setavatar/:id", setAvatar);
+v1AuthRoutes.post("/setavatar/:id", setAvatar);
 
 /**
  * @swagger
@@ -343,7 +344,7 @@ authRoutes.post("/setavatar/:id", setAvatar);
  *                   type: boolean
  *                   example: false
  */
-authRoutes.post("/forgot-password", forgotPassword);
+v1AuthRoutes.post("/forgot-password", forgotPassword);
 
 /**
  * @swagger
@@ -425,7 +426,69 @@ authRoutes.post("/forgot-password", forgotPassword);
  *                   type: boolean
  *                   example: false
  */
-authRoutes.post("/reset-password/:token", resetPassword);
+v1AuthRoutes.post("/reset-password/:token", resetPassword);
+
+/**
+ * @swagger
+ * /api/auth/refresh-token:
+ *   post:
+ *     summary: Refresh the user's access token using the refresh token.
+ *     description: Allows the user to refresh their access token by providing a valid refresh token. The refresh token must be valid and exist in Redis.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 description: The refresh token provided by the user.
+ *                 example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDYwYjQxZGI2NmQ3OTg5MTg2YjFiNmY0MTFhNDcxZDYyIiwiaWF0IjoxNjYyMDA5ODIyfQ.5MnMY7tOFiUJ1MlqzV8eZ7MmRLoRxwzDWmxtQGqXfr9dG0Fj9gxldRjJfOoqj9qgfrGF04wqdk9bq6In0A8w"
+ *     responses:
+ *       200:
+ *         description: Successfully refreshed access token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   description: The new access token.
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDYwYjQxZGI2NmQ3OTg5MTg2YjFiNmY0MTFhNDcxZDYyIiwiaWF0IjoxNjYyMDA5ODIyfQ.5MnMY7tOFiUJ1MlqzV8eZ7MmRLoRxwzDWmxtQGqXfr9dG0Fj9gxldRjJfOoqj9qgfrGF04wqdk9bq6In0A8w"
+ *       400:
+ *         description: Refresh token not provided or invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Refresh Token Required"
+ *       403:
+ *         description: Invalid or expired refresh token, or token does not exist in Redis.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid Refresh Token"
+ *       500:
+ *         description: Server error or issue accessing Redis.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Error accessing Redis"
+ */
+v1AuthRoutes.post("/refresh-token", refreshToken);
 
 /**
  * @swagger
@@ -469,6 +532,6 @@ authRoutes.post("/reset-password/:token", resetPassword);
  *                   type: boolean
  *                   example: false
  */
-authRoutes.get("/logout/:id", logOut);
+v1AuthRoutes.post("/logout", logOut);
 
-export default authRoutes;
+export default v1AuthRoutes;

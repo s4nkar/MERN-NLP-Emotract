@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../assets/logo.svg";
@@ -117,7 +117,7 @@ export default function Register() {
     event.preventDefault();
     if (handleValidation()) {
       // const { email, username, password } = values;
-      const { data } = await axios.post(registerRoute, values);
+      const { data } = await axiosInstance.post(registerRoute, values);
 
       if (data.status === false) {
         toast.error(data.msg, toastOptions);
@@ -127,7 +127,7 @@ export default function Register() {
           import.meta.env.VITE_LOCALHOST_KEY,
           JSON.stringify(data.user)
         );
-        navigate("/");
+        navigate("/login");
       }
     }
   };

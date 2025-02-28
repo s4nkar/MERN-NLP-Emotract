@@ -2,7 +2,7 @@ import { useState } from "react";
 import { forgotPasswordRoute } from "../utils/APIRoutes";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -29,7 +29,7 @@ export default function ForgotPassword() {
             toast.error("Email is Required!", toastOptions);
             return;
         }
-        const { data } = await axios.post(forgotPasswordRoute, {
+        const { data } = await axiosInstance.post(forgotPasswordRoute, {
             email
         });
         if (data.status === false) {
@@ -37,7 +37,7 @@ export default function ForgotPassword() {
         }
         if (data.status === true) {
             toast.success(data.message, toastOptions);
-            setTimeout(()=>{navigate("/")}, 2000)
+            setTimeout(()=>{navigate("/login")}, 2000)
         }
     };
 
