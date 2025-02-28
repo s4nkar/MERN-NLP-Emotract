@@ -5,12 +5,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { setAvatarRoute } from "../utils/APIRoutes";
-
-import avatar1 from "../assets/avatars/avatar.png";
 import axiosInstance from "../utils/axiosInstance";
 
 export default function SetAvatar() {
-  const api = `https://api.multiavatar.com/4645646`;
   const navigate = useNavigate();
   const [avatars, setAvatars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -64,20 +61,15 @@ export default function SetAvatar() {
   useEffect(() => {
     const fetchAvatars = async () => {
       try {
-        const data = [];
-        for (let i = 0; i < 4; i++) {
-          // const response = await axios.get(
-          //   `https://api.allorigins.win/get?url=${encodeURIComponent(`${'https://api.multiavatar.com/Binx Bond.png'}/${Math.round(Math.random() * 1000)}`)}`
-          // );
-          // console.log({response});
-          
-          // The response is wrapped in a 'contents' field from the CORS proxy
-          // const avatar = JSON.parse(response.data.contents);  // Assuming the content is a JSON response
-    
-          // If the content is Base64-encoded or some other image format, you can push it directly
-          data.push(avatar1);  // This assumes `avatar` is the Base64 string or relevant data
-        }
-    
+        const data = [
+          "https://api.dicebear.com/9.x/croodles/svg",
+          "https://api.dicebear.com/9.x/bottts-neutral/svg",
+          "https://api.dicebear.com/9.x/bottts/svg",
+          "https://api.dicebear.com/9.x/adventurer/svg",
+          "https://api.dicebear.com/9.x/lorelei/svg",
+          "https://api.dicebear.com/9.x/open-peeps/svg",
+          "https://api.dicebear.com/9.x/thumbs/svg"
+        ];
         setAvatars(data);
       } catch (error) {
         console.error("Error fetching avatars:", error);
@@ -88,7 +80,7 @@ export default function SetAvatar() {
     
   
     fetchAvatars(); 
-  }, [api]);
+  }, []);
 
   return (
     <>
@@ -110,7 +102,6 @@ export default function SetAvatar() {
                   }`}
                 >
                   <img
-                    style={{ mixBlendMode: "saturation" }}
                     src={`${avatar}`}
                     alt="avatar"
                     key={avatar}

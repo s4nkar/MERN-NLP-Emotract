@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Logo from "../assets/logo.svg";
 import Logout from "./Logout"
 import fallBackImage from "../assets/avatars/avatar.png"
+import Settings from "./ui/Settings";
 
 export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
@@ -15,7 +16,7 @@ export default function Contacts({ contacts, changeChat }) {
       if (storedData) {
         try {
           const data = JSON.parse(storedData);
-          setCurrentUserName(data.firstname + " "+ data.lastname);
+          setCurrentUserName(data.firstname);
           setCurrentUserImage(data.avatarImage);
         } catch (error) {
           console.error("Error parsing user data:", error);
@@ -33,14 +34,14 @@ export default function Contacts({ contacts, changeChat }) {
 
   return (
     <>
-      {currentUserImage && currentUserImage && (
+      {currentUserImage && (
         <Container>
           <div className="flex justify-between px-5 text-white items-center w-full ">
             <div className="flex items-center">
               <img src={Logo} alt="logo" />
               <h3 className="pl-1">Emotract v1</h3>
             </div>
-            <Logout />
+            <Settings currentUserImage={currentUserImage} currentUserName={currentUserName} />
           </div>
           <div className="contacts">
             <div className="w-[90%] border-b border-gray-400 mt-1">
@@ -58,7 +59,7 @@ export default function Contacts({ contacts, changeChat }) {
                   <div className="avatar">
                     <img
                       src={contact.avatarImage ? contact.avatarImage : fallBackImage}
-                      className="w-12 h-12 rounded-full"
+                      className="w-12 h-12 rounded-full border-1 border-gray-400"
                       alt=""
                     />
                   </div>
@@ -117,7 +118,7 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     overflow: auto;
-    gap: 0.4rem;
+    gap: 0.2rem;
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
@@ -144,7 +145,7 @@ const Container = styled.div`
       }
     }
     .selected {
-      background-color: #9a86f3;
+      background-color: #1f193a;
     }
   }
 
