@@ -3,9 +3,9 @@ import { resetPasswordRoute } from "../utils/APIRoutes";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Logo from "../assets/logo.svg";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function ResetPassword() {
     const [values, setValues] = useState({ password: "", confirm_password: "" });
@@ -41,7 +41,7 @@ export default function ResetPassword() {
         }
     
         try {
-            const { data } = await axios.post(`${resetPasswordRoute}/${token}`, { password });
+            const { data } = await axiosInstance.post(`${resetPasswordRoute}/${token}`, { password });
     
             if (data.status === false) {
                 toast.error(data.message, toastOptions);

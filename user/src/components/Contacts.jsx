@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Logo from "../assets/logo.svg";
+import Logout from "./Logout"
+import fallBackImage from "../assets/avatars/avatar.png"
 
 export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
@@ -33,9 +35,12 @@ export default function Contacts({ contacts, changeChat }) {
     <>
       {currentUserImage && currentUserImage && (
         <Container>
-          <div className="brand">
-            <img src={Logo} alt="logo" />
-            <h3>Emotract v1</h3>
+          <div className="flex justify-between px-5 text-white items-center w-full ">
+            <div className="flex items-center">
+              <img src={Logo} alt="logo" />
+              <h3 className="pl-1">Emotract v1</h3>
+            </div>
+            <Logout />
           </div>
           <div className="contacts">
             <div className="w-[90%] border-b border-gray-400 mt-1">
@@ -47,13 +52,13 @@ export default function Contacts({ contacts, changeChat }) {
                   key={contact._id}
                   className={`contact ${
                     index === currentSelected ? "selected" : ""
-                  }`}
+                  } hover:bg-[#dedede34]`}
                   onClick={() => changeCurrentChat(index, contact)}
                 >
                   <div className="avatar">
                     <img
-                      src={`${contact.avatarImage}`}
-                      className="w-12 h-12"
+                      src={contact.avatarImage ? contact.avatarImage : fallBackImage}
+                      className="w-12 h-12 rounded-full"
                       alt=""
                     />
                   </div>

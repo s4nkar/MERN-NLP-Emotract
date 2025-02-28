@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import loader from "../assets/loader.gif";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { setAvatarRoute } from "../utils/APIRoutes";
 
 import avatar1 from "../assets/avatars/avatar.png";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function SetAvatar() {
   const api = `https://api.multiavatar.com/4645646`;
@@ -43,7 +43,7 @@ export default function SetAvatar() {
         localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY)
       );
 
-      const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
+      const { data } = await axiosInstance.post(`${setAvatarRoute}/${user._id}`, {
         image: avatars[selectedAvatar],
       });
 

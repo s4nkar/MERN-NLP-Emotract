@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loginRoute } from "../utils/APIRoutes";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -41,25 +41,31 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (validateForm()) {
+    
+    if (!validateForm()) return;
+  
+    try {
       const { username, password } = values;
-      const { data } = await axios.post(loginRoute, {
-        username,
-        password,
-      });
-      if (data.status === false) {
-        toast.error(data.msg, toastOptions);
+      
+      const response = await axiosInstance.post(loginRoute, { username, password });
+      const { data } = response; // Extract data from response
+  
+      if (!data.status) {
+        return toast.error(data.message, toastOptions);
       }
-      if (data.status === true) {
-        localStorage.setItem(
-          import.meta.env.VITE_LOCALHOST_KEY,
-          JSON.stringify(data.user)
-        );
+  
+      // Store user data and token in localStorage
+      localStorage.setItem(import.meta.env.VITE_LOCALHOST_KEY, JSON.stringify(data.user));
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      navigate("/");
 
-        navigate("/");
-      }
+    } catch (error) { 
+      console.error("Login error:", error);
+      toast.error("error.response.data.message", toastOptions);
     }
   };
+  
 
   return (
     <>
