@@ -1,12 +1,13 @@
 import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js"; 
-import authRoutes from "./routes/auth.js";
-import messageRoutes from "./routes/messages.js";
+import v1AuthRoutes from "./routes/v1/auth.js";
+import v1MessageRoutes from "./routes/v1/messages.js";
 import { Server } from "socket.io";
 import logger  from "./middleware/logger.js";
 import swaggerDocs from './config/swagger.js';
 import dotenv from "dotenv";
+import connectRedis from "./config/redis.js";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || "http://localhost:5173",
   credentials: true,
 }));
+
 app.use(express.json());
 
 // Logger middleware
@@ -25,13 +27,16 @@ app.use(logger);
 // Connect to MongoDB
 connectDB();
 
+// Connect to Redis
+export const client = await connectRedis();
+
 app.get("/", (req, res) => {
   res.redirect("/api-docs");
 });
  
-// API Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/messages", messageRoutes);
+// v1 API Routes
+app.use("/api/v1/auth", v1AuthRoutes);
+app.use("/api/v1/messages", v1MessageRoutes);
 
 // Swagger Docs Route
 swaggerDocs(app);
@@ -44,7 +49,7 @@ const server = app.listen(PORT, () =>
 // Use default WebSocket engine (ws) that comes with socket.io
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173/",  // React app on port 5173
+    origin: "http://localhost:5173",  // React app on port 5173
     credentials: true,  // Allow credentials to be passed
   },
 });
