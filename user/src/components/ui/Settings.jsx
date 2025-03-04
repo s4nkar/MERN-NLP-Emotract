@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Logout from '../Logout';
-import { BiDoorOpen } from "react-icons/bi";
+import { SettingsIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Settings = ({ currentUserImage, currentUserName }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +33,7 @@ const Settings = ({ currentUserImage, currentUserName }) => {
         className="rounded-sm cursor-pointer bg-slate-800 py-1 px-1 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
         type="button"
       >
-        <BiDoorOpen className='h-5 w-5'/>
+        <SettingsIcon className='h-5 w-5'/>
       </button>
 
       {/* Dropdown Menu */}
@@ -58,7 +59,7 @@ const Settings = ({ currentUserImage, currentUserName }) => {
               className="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-2 transition-all hover:bg-[#565660] focus:bg-[#565660]"
               onClick={() => setIsOpen(false)} // Close menu on click
             >
-              <span className='text-white'>Change Avatar</span>
+              <Link className='text-white' to="/setAvatar">Change Avatar</Link>
             </li>
             <li
               role="menuitem"
