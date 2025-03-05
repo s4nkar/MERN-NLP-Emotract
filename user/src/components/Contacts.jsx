@@ -8,6 +8,8 @@ export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
+  const [searchQuery, setSearchQuery] = useState(""); // Added state for search query
+  const [filteredContacts, setFilteredContacts] = useState(contacts); // Filtered contacts based on search query
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -25,6 +27,19 @@ export default function Contacts({ contacts, changeChat }) {
   
     fetchUserData();
   }, []);
+
+   // Filter contacts based on the search query
+   useEffect(() => {
+    if (searchQuery === "") {
+      setFilteredContacts(contacts); // Show all contacts when no search query
+    } else {
+      setFilteredContacts(
+        contacts.filter((contact) =>
+          contact.username.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    }
+  }, [searchQuery, contacts]);
 
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
@@ -44,31 +59,43 @@ export default function Contacts({ contacts, changeChat }) {
           </div>
           <div className="contacts">
             <div className="w-[90%] border-b border-gray-400 mt-1">
-              <input type="text" placeholder="Search..." className="placeholder:text-gray-400 w-full p-2 focus:outline-none text-white" name="" id="" />
+              <input
+                  type="text"
+                  placeholder="Search..."
+                  className="placeholder:text-gray-400 w-full p-2 focus:outline-none text-white"
+                  value={searchQuery} // Bind the search query
+                  onChange={(e) => setSearchQuery(e.target.value)} // Update the state on input change
+                />
             </div>
-            {contacts.map((contact, index) => {
-              return (
-                <div
-                  key={contact._id}
-                  className={`contact ${
-                    index === currentSelected ? "selected" : ""
-                  } hover:bg-[#dedede34]`}
-                  onClick={() => changeCurrentChat(index, contact)}
-                >
-                  <div className="avatar">
-                    <img
-                      src={contact.avatarImage ? contact.avatarImage : fallBackImage}
-                      className="w-12 h-12 rounded-full border-1 border-gray-400"
-                      alt=""
-                    />
+            {filteredContacts.length === 0 ? (
+              <div className="no-results mt-5">
+                <p className="text-orange-800">No contacts found!</p>
+              </div>
+            ) : (
+              filteredContacts.map((contact, index) => {
+                return (
+                  <div
+                    key={contact._id}
+                    className={`contact ${
+                      index === currentSelected ? "selected" : ""
+                    } hover:bg-[#dedede34]`}
+                    onClick={() => changeCurrentChat(index, contact)}
+                  >
+                    <div className="avatar">
+                      <img
+                        src={contact.avatarImage ? contact.avatarImage : fallBackImage}
+                        className="w-12 h-12 rounded-full border-1 border-gray-400"
+                        alt=""
+                      />
+                    </div>
+                    <div className="username flex flex-col gap-0">
+                      <h3>{contact.username}</h3>
+                      <span className="text-gray-500 text-sm">Last message</span>
+                    </div>
                   </div>
-                  <div className="username flex flex-col gap-0">
-                    <h3>{contact.username}</h3>
-                    <span className="text-gray-500 text-sm">Last message</span>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
           <div className="flex justify-between items-center pl-[0.4rem]">
           <div className="flex">
@@ -128,7 +155,7 @@ const Container = styled.div`
     }
     .contact {
       background-color: #ffffff34;
-      min-height: 2rem;
+      min-height: 4rem;
       cursor: pointer;
       width: 90%;
       border-radius: 0.2rem;
