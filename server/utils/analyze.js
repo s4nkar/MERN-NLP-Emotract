@@ -1,8 +1,11 @@
 import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const analyzeMessage = async (message) => {
   try {
-    const response = await axios.post("http://127.0.0.1:8000/analyze/", {
+    const response = await axios.post(`${process.env.FASTAPI_URL}/analyze/`, {
       text: message,
     });
     return await response.data.data;
@@ -13,9 +16,4 @@ const analyzeMessage = async (message) => {
 };
 
 export default analyzeMessage;
-// Example usage
-// const message = "i my horny";
-// const response = await analyzeMessage(message);
-// const [bertEmotion, RobertaEmotion, lrEmotion, rfEmotion ] = response;
-// console.log(bertEmotion, RobertaEmotion, lrEmotion, rfEmotion);
 

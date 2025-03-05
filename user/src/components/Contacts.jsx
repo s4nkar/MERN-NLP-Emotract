@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Logo from "../assets/logo.svg";
-import Logout from "./Logout"
 import fallBackImage from "../assets/avatars/avatar.png"
 import Settings from "./ui/Settings";
 

@@ -1,6 +1,22 @@
 import Messages from "../../models/Messages.js"
 import analyzeMessage from "../../utils/analyze.js";
 
+async function processEmotionDetection(messageId, text) {
+
+  // get emotions from fast api 
+  const [bertEmotion, RobertaEmotion, lrEmotion, rfEmotion ] = await analyzeMessage(text);
+
+
+  // // Update the message with the emotion result
+  // await Message.findByIdAndUpdate(messageId, {
+  //   emotion: result.emotion,
+  //   sentiment_score: result.sentiment_score,
+  //   status: 'processed' // Mark the message as processed
+  // });
+
+  console.log(`Message ${messageId} emotion detected: ${bertEmotion, RobertaEmotion, lrEmotion, rfEmotion}`);
+}
+
 export const getMessages = async (req, res, next) => {
   try {
     const { from, to } = req.body;
@@ -37,8 +53,6 @@ export const addMessage = async (req, res, next) => {
       return res.status(400).json({ msg: "All fields (from, to, message) are required." });
     }
 
-    // get emotions from fast api 
-    const [bertEmotion, RobertaEmotion, lrEmotion, rfEmotion ] = await analyzeMessage(message);
 
     // Create new message in the database
     const data = await Messages.create({
