@@ -7,6 +7,7 @@ import {
   forgotPassword,
   resetPassword,
   refreshToken,
+  getUserOnlineStatus,
 } from "../../controllers/v1/userController.js";
 import express from "express";
 
@@ -489,6 +490,8 @@ v1AuthRoutes.post("/reset-password/:token", resetPassword);
  *                   example: "Error accessing Redis"
  */
 v1AuthRoutes.post("/refresh-token", refreshToken);
+
+v1AuthRoutes.get("/online-status/:id", getUserOnlineStatus);
 
 /**
  * @swagger

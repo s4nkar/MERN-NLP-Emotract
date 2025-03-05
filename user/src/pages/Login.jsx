@@ -55,14 +55,14 @@ export default function Login() {
       }
   
       // Store user data and token in localStorage
-      localStorage.setItem(import.meta.env.VITE_LOCALHOST_KEY, JSON.stringify(data.user));
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem(import.meta.env.VITE_LOCALHOST_KEY, JSON.stringify(data.user));
       navigate("/");
 
     } catch (error) { 
-      console.error("Login error:", error);
-      toast.error("error.response.data.message", toastOptions);
+      console.error("Login error:", error.response.data.message);
+      toast.error(error.response.data.message, toastOptions);
     }
   };
   

@@ -1,5 +1,6 @@
 // socket.js
 import { Server } from 'socket.io';
+import User from '../models/User.js';
 
 export const setupSocket = (server) => {
   // Use default WebSocket engine (ws) that comes with socket.io
@@ -16,9 +17,15 @@ export const setupSocket = (server) => {
     global.chatSocket = socket;
     // console.log('A user connected:', socket.id);
 
-    socket.on("add-user", (userId) => {
+    socket.on("add-user", async (userId) => {
       global.onlineUsers.set(userId, socket.id);
-    //   console.log(`User ${userId} added with socket id ${socket.id}`);
+
+      try {
+        await User.findByIdAndUpdate(userId, { is_online: true });
+        // console.error("ISONLINE TRUE");
+      } catch (err) {
+        console.error("Error updating user online status:", err);
+      }
     });
 
     socket.on("send-msg", (data) => {
@@ -29,9 +36,30 @@ export const setupSocket = (server) => {
       }
     });
 
-    socket.on('disconnect', () => {
-      // Handle socket disconnection
-      console.log(`User disconnected: ${socket.id}`);
+     // Handle user logout
+     socket.on("logout", async (userId) => {
+      console.log("SERVER LOGOUT");
+      try {
+        await User.findByIdAndUpdate(userId, { is_online: false });
+        console.log(`User ${userId} has logged out`);
+      } catch (err) {
+        console.error("Error updating user logout status:", err);
+      }
+    });
+
+    socket.on('disconnect', async () => {
+      try {
+          const user = await User.findOneAndUpdate(
+            { socket_id: socket.id },
+            { is_online: false },
+            { new: true }
+          );
+          if (user) {
+            console.log(`User ${user._id} is now offline`);
+          }
+        } catch (err) {
+          console.error("Error updating user offline status:", err);
+        }
     });
   });
 

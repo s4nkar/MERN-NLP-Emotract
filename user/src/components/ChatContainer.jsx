@@ -2,15 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import ChatInput from "./ChatInput";
 import { v4 as uuidv4 } from "uuid";
-import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
+import { sendMessageRoute, recieveMessageRoute, fetchCurrentOnlineStatusRoute } from "../utils/APIRoutes";
 import axiosInstance from "../utils/axiosInstance";
 import fallBackImage from "../assets/avatars/avatar.png"
+import { useSocket } from "../context/SocketProvider";
 
-export default function ChatContainer({ currentChat, socket }) {
-  const [messages, setMessages] = useState([]);
+export default function ChatContainer({ currentChat }) {
+  const [messages, setMessages] = useState([]); 
+  const [currentUserOnlineStatus, setCurrentUserOnlineStatus] = useState(false); 
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
-
+  const socket = useSocket();
+  
   useEffect(() => {
     const fetchMessages = async () => {
       const storedData = localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY);
@@ -44,33 +47,58 @@ export default function ChatContainer({ currentChat, socket }) {
     getCurrentChat();
   }, [currentChat]);
 
+  // Handle online status 
+  useEffect(() => {
+    const fetchCurrentOnlineStatus = async () => {
+        try {
+          const response = await axiosInstance.get(`${fetchCurrentOnlineStatusRoute}/${currentChat._id}`);
+          console.log({response});
+          setCurrentUserOnlineStatus(response.data?.is_online);
+        } catch (error) {
+          console.error("Error fetching messages:", error);
+        }
+      }
+
+    fetchCurrentOnlineStatus();
+  }, [currentChat]);
+
   const handleSendMsg = async (msg) => {
-    const data = await JSON.parse(
-      localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY)
-    );
-    socket.current.emit("send-msg", {
+    const data = JSON.parse(localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY));
+  
+    if (!socket) {
+      console.error("Socket is not connected!");
+      return;
+    }
+  
+    socket.emit("send-msg", {
       to: currentChat._id,
       from: data._id,
       msg,
     });
+  
     await axiosInstance.post(sendMessageRoute, {
       from: data._id,
       to: currentChat._id,
       message: msg,
     });
-
-    const msgs = [...messages];
-    msgs.push({ fromSelf: true, message: msg });
-    setMessages(msgs);
+  
+    setMessages((prevMsgs) => [...prevMsgs, { fromSelf: true, message: msg }]);
   };
-
+  
   useEffect(() => {
-    if (socket.current) {
-      socket.current.on("msg-recieve", (msg) => {
-        setArrivalMessage({ fromSelf: false, message: msg });
-      });
-    }
+    if (!socket) return;
+  
+    const handleMessageReceive = (msg) => {
+      setArrivalMessage({ fromSelf: false, message: msg });
+    };
+  
+    socket.on("msg-recieve", handleMessageReceive);
+  
+    return () => {
+      socket.off("msg-recieve", handleMessageReceive); // Cleanup listener on unmount
+    };
   }, [socket]);
+  
 
   useEffect(() => {
     arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
@@ -93,7 +121,7 @@ export default function ChatContainer({ currentChat, socket }) {
           </div>
           <div className="username flex flex-col justify-start">
             <h3 className="text-white mt-1">{currentChat.username}</h3>
-            {currentChat.is_online ?
+            {currentUserOnlineStatus ?
             (
               <span className="text-green-600 text-sm">Online</span>
             ):(

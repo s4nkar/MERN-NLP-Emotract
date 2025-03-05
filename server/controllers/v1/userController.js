@@ -111,6 +111,7 @@ export const getAllUsers = async (req, res, next) => {
       "username",
       "avatarImage",
       "_id",
+      "is_online",
     ]);
     return res.json(users);
   } catch (ex) {
@@ -223,6 +224,17 @@ export const refreshToken = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getUserOnlineStatus = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ is_online: user.is_online });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+}
 
 export const logOut = async (req, res) => {
   try {
