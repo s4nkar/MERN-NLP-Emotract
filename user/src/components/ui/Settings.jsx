@@ -63,10 +63,10 @@ const Settings = ({ currentUserImage, currentUserName }) => {
             </li>
             <li
               role="menuitem"
-              className="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-2 transition-all hover:bg-[#565660] focus:bg-[#565660]"
+              className="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md  transition-all hover:bg-[#565660] focus:bg-[#565660]"
               onClick={() => setIsOpen(false)} // Close menu on click
             >
-              <Logout/> <span className='ml-2 text-white'>Logout</span>
+              <Logout/>
             </li>
             
         </ul>

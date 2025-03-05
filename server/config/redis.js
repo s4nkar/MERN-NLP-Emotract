@@ -4,10 +4,10 @@ import { createClient } from 'redis';
 const connectRedis = async () => {
   const client = createClient({
     username: 'default',
-    password: process.env.REDIS_PASSWORD, // Use environment variable for password
+    password: process.env.REDIS_PASSWORD, 
     socket: {
-      host: process.env.REDIS_HOST, // Specify the host from .env
-      port: process.env.REDIS_PORT, // Specify the port from .env
+      host: process.env.REDIS_HOST, 
+      port: process.env.REDIS_PORT,
     },
   });
 

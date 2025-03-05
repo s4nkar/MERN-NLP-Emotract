@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { BiLogOut } from "react-icons/bi";
 import { logoutRoute } from "../utils/APIRoutes";
 import axiosInstance from "../utils/axiosInstance";
+import { useSocket } from "../context/SocketProvider";
 
 export default function Logout() {
   const navigate = useNavigate();
+  const socket = useSocket();
 
-  const handleClick = async () => {
+  const handleLogout = async () => {
     try {
       // Get user data from localStorage
       const userData = localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY);
@@ -20,6 +22,15 @@ export default function Logout() {
   
       // Send the logout request
       const response = await axiosInstance.post(logoutRoute, { userId });
+
+      if (response.status === 200) {
+        // Ensure the socket is connected before emitting logout
+        if (socket && socket.connected) {
+          console.log("CLIENT LOGOUT");
+          socket.emit("logout", userId);
+        } else {
+          console.warn("Socket not connected, logout event not sent");
+        }
   
       // Clear tokens and user data from localStorage
       localStorage.removeItem("accessToken");
@@ -28,6 +39,10 @@ export default function Logout() {
   
       // Navigate to the login page
       navigate("/login");
+    } else {
+      console.error("Failed to log out. Server response:", response.data);
+      alert("An error occurred while logging out. Please try again.");
+    }
     } catch (error) {
       // Handle any errors
       console.error("Logout error:", error);
@@ -37,7 +52,10 @@ export default function Logout() {
   
 
   return (
-      <BiLogOut onClick={handleClick} className="w-5 h-5 text-white cursor-pointer" />
+      <button className="flex cursor-pointer w-full p-2" onClick={handleLogout}>
+        <BiLogOut className="w-5 h-5 text-white " />
+        <span className='ml-2 text-white'>Logout</span>
+      </button>
   );
 }
 

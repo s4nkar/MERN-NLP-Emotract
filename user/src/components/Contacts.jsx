@@ -15,7 +15,7 @@ export default function Contacts({ contacts, changeChat }) {
       if (storedData) {
         try {
           const data = JSON.parse(storedData);
-          setCurrentUserName(data.firstname);
+          setCurrentUserName(data.username);
           setCurrentUserImage(data.avatarImage);
         } catch (error) {
           console.error("Error parsing user data:", error);

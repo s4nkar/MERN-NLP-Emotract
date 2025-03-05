@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
       required: false,
       default: "NA",
     },
+    socket_id: {
+      type: String,
+      default: null,
+    },
     email: {
       type: String,
       required: true,
@@ -106,6 +110,4 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const User = mongoose.model("Users", userSchema);
-
-export default User;
+export default mongoose.model("User", userSchema);

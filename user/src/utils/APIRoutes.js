@@ -6,4 +6,5 @@ export const logoutRoute = `/auth/logout`;
 export const allUsersRoute = `/auth/allusers`;
 export const sendMessageRoute = `/messages/addmsg`;
 export const recieveMessageRoute = `/messages/getmsg`;
+export const fetchCurrentOnlineStatusRoute = `/auth/online-status`;
 export const setAvatarRoute = `/auth/setavatar`;
