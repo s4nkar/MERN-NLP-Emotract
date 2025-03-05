@@ -123,10 +123,10 @@ export default function Register() {
         toast.error(data.msg, toastOptions);
       }
       if (data.status === true) {
-        localStorage.setItem(
-          import.meta.env.VITE_LOCALHOST_KEY,
-          JSON.stringify(data.user)
-        );
+        // localStorage.setItem(
+        //   import.meta.env.VITE_LOCALHOST_KEY,
+        //   JSON.stringify(data.user)
+        // );
         navigate("/login");
       }
     }
