@@ -4,6 +4,7 @@ import ChatInput from "./ChatInput";
 import { v4 as uuidv4 } from "uuid";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
 import axiosInstance from "../utils/axiosInstance";
+import fallBackImage from "../assets/avatars/avatar.png"
 
 export default function ChatContainer({ currentChat, socket }) {
   const [messages, setMessages] = useState([]);
@@ -22,6 +23,7 @@ export default function ChatContainer({ currentChat, socket }) {
               to: currentChat._id,
             });
             setMessages(response.data);
+            
           } catch (error) {
             console.error("Error fetching messages:", error);
           }
@@ -84,9 +86,9 @@ export default function ChatContainer({ currentChat, socket }) {
         <div className="user-details flex gap-2 p-2 ">
           <div className="avatar flex justify-start">
             <img
-              src={`${currentChat.avatarImage}`}
+              src={currentChat.avatarImage ? currentChat.avatarImage : fallBackImage}
               alt="user image"
-              className="w-12 h-12 rounded-full"
+              className="w-12 h-12 rounded-full border-1 border-gray-400"
             />
           </div>
           <div className="username flex flex-col justify-start">
@@ -103,7 +105,7 @@ export default function ChatContainer({ currentChat, socket }) {
       <div className="chat-messages">
       {/* Encryption message */}
       <div className="text-yellow-700 p-3 rounded-lg text-center text-sm w-full mt-2">
-        🔒 Messages you send to this chat and calls are now secured with end-to-end encryption. Tap for more info.
+        🔒 Messages you send to this chat and calls are now secured with encryption. Tap for more info.
       </div>
         {messages.map((message) => {
           return (

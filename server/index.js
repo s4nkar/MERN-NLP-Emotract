@@ -3,11 +3,13 @@ import cors from "cors";
 import connectDB from "./config/db.js"; 
 import v1AuthRoutes from "./routes/v1/auth.js";
 import v1MessageRoutes from "./routes/v1/messages.js";
-import { Server } from "socket.io";
+import cron from "node-cron";
 import logger  from "./middleware/logger.js";
 import swaggerDocs from './config/swagger.js';
-import dotenv from "dotenv";
 import connectRedis from "./config/redis.js";
+import dotenv from "dotenv";
+import handleprocessingMessages from "./utils/processEmotion.js";
+import { setupSocket } from "./config/socket.js";
 
 dotenv.config();
 
@@ -41,30 +43,13 @@ app.use("/api/v1/messages", v1MessageRoutes);
 // Swagger Docs Route
 swaggerDocs(app);
 
+// Run the cron job every 5 seconds to process new messages
+cron.schedule('*/10 * * * * *', handleprocessingMessages);
+
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () =>
   console.log(`Server started on http://localhost:${PORT}`)
 );
 
-// Use default WebSocket engine (ws) that comes with socket.io
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",  // React app on port 5173
-    credentials: true,  // Allow credentials to be passed
-  },
-});
-
-global.onlineUsers = new Map();
-io.on("connection", (socket) => {
-  global.chatSocket = socket;
-  socket.on("add-user", (userId) => {
-    onlineUsers.set(userId, socket.id);
-  });
-
-  socket.on("send-msg", (data) => {
-    const sendUserSocket = onlineUsers.get(data.to);
-    if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("msg-recieve", data.msg);
-    }
-  });
-});
+// initialize socket.io
+setupSocket(server);
