@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from 'jsonwebtoken';
 import { sendResetEmail } from "../../config/email.js";
-import User from "../../models/User.js";
+import Users from "../../models/Users.js";
 import PasswordReset from "../../models/PasswordReset.js";
 import { client } from "../../index.js";
 
@@ -12,7 +12,7 @@ export const login = async (req, res, next) => {
     const { username, password } = req.body;
     
     // Check if user exists
-    const user = await User.findOne({ username });
+    const user = await Users.findOne({ username });
 
     if (!user) 
       return res.status(401).json({ message: "Incorrect Username", status: false });
@@ -58,7 +58,7 @@ export const register = async (req, res, next) => {
     const ageVerified = parseInt(age) >= 18;
     
     // Efficient single query to check existing user data
-    const existingUser = await User.findOne({
+    const existingUser = await Users.findOne({
       $or: [{ username }, { email }, { phone }],
     });
 
@@ -80,7 +80,7 @@ export const register = async (req, res, next) => {
     }
 
     // Create new user
-    const user = await User.create({
+    const user = await Users.create({
       email,
       username,
       password: hashedPassword,
@@ -106,12 +106,11 @@ export const register = async (req, res, next) => {
 
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find({ _id: { $ne: req.params.id } }).select([
+    const users = await Users.find({ _id: { $ne: req.params.id } }).select([
       "email",
       "username",
       "avatarImage",
       "_id",
-      "is_online",
     ]);
     return res.json(users);
   } catch (ex) {
@@ -125,7 +124,7 @@ export const setAvatar = async (req, res, next) => {
     const avatarImage = req.body.image; // Capturing the image URL from the body
 
     // Find the user by ID and update their avatar image and avatar status
-    const userData = await User.findByIdAndUpdate(
+    const userData = await Users.findByIdAndUpdate(
       userId, // Using the userId from the URL parameter
       {
         isAvatarImageSet: true, // Flagging the avatar image as set
@@ -147,7 +146,7 @@ export const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await Users.findOne({ email });
     if (!user) return res.status(404).json({ status: false, message: "User not found" });
 
     // Generate secure reset token
@@ -177,7 +176,7 @@ export const resetPassword = async (req, res, next) => {
     return res.status(400).json({ status: false, message: "Invalid or expired token" });
   }
 
-  const user = await User.findById(resetRequest.userId);
+  const user = await Users.findById(resetRequest.userId);
   if (!user) return res.status(404).json({ status: false, message: "User not found" });
 
   // Update password
@@ -227,7 +226,7 @@ export const refreshToken = async (req, res) => {
 
 export const getUserOnlineStatus = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await Users.findById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.json({ is_online: user.is_online });

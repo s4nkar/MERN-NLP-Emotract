@@ -1,6 +1,6 @@
 // socket.js
 import { Server } from 'socket.io';
-import User from '../models/User.js';
+import User from '../models/Users.js';
 
 export const setupSocket = (server) => {
   // Use default WebSocket engine (ws) that comes with socket.io

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const usersSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -106,8 +106,8 @@ const userSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: { createdAt: "created_at", updatedAt: "updated_at" }, // Auto-manages created_at & updated_at
+    timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
   }
 );
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model("Users", usersSchema);
