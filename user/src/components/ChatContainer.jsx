@@ -80,6 +80,7 @@ export default function ChatContainer({ currentChat }) {
       from: data._id,
       to: currentChat._id,
       message: msg,
+      is_group: false,
     });
   
     setMessages((prevMsgs) => [...prevMsgs, { fromSelf: true, message: msg }]);
