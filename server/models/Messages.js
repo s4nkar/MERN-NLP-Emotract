@@ -2,14 +2,41 @@ import mongoose from "mongoose";
 
 const MessageSchema = mongoose.Schema(
   {
-    message: {
-      text: { type: String, required: true },
-    },
-    users: Array,
-    sender: {
+    chat_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Chats",
       required: true,
+    },
+    sender_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
+      required: true,
+    },
+    text: { type: String, required: true },
+    sent_at: {
+      type: Date,
+      default: Date.now,
+    },
+    read_by: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Users" }
+    ],
+    is_active: {
+      type: Boolean,
+      default: true,
+    },
+    processing_status: {
+      type: String,
+      default: 'processing',
+    },
+    reaction: {
+      emoji: { type: String },
+      reacted_by: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "Users" }
+      ],
+      reacted_at: {
+        type: Date,
+        default: Date.now,
+      },
     },
   },
   {
@@ -17,6 +44,4 @@ const MessageSchema = mongoose.Schema(
   }
 );
 
-const Messages = mongoose.model("Messages", MessageSchema);
-
-export default Messages;
+export default mongoose.model("Messages", MessageSchema);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { allUsersRoute } from "../utils/APIRoutes";
+import { allContactUsersRoute } from "../utils/APIRoutes";
 import ChatContainer from "../components/ChatContainer";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
@@ -47,7 +47,7 @@ export default function Chat() {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
           try {
-            const { data } = await axiosInstance.get(`${allUsersRoute}/${currentUser._id}`);
+            const { data } = await axiosInstance.get(`${allContactUsersRoute}/${currentUser._id}`);
             setContacts(data);
           } catch (error) {
             console.error("Error fetching contacts:", error);

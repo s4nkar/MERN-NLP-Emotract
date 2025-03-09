@@ -8,6 +8,7 @@ import {
   resetPassword,
   refreshToken,
   getUserOnlineStatus,
+  getAllContactsUsers,
 } from "../../controllers/v1/userController.js";
 import express from "express";
 
@@ -191,7 +192,9 @@ v1AuthRoutes.post("/register", register);
  *                   type: boolean
  *                   example: false
  */
-v1AuthRoutes.get("/allusers/:id", getAllUsers);
+v1AuthRoutes.get("/all-users/:id", getAllUsers);
+
+v1AuthRoutes.get("/all-contact-users/:id", getAllContactsUsers);
 
 /**
  * @swagger

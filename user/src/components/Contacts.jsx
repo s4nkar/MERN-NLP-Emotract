@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Logo from "../assets/logo.svg";
 import fallBackImage from "../assets/avatars/avatar.png"
 import Settings from "./ui/Settings";
+import { allUsersRoute } from "../utils/APIRoutes";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
@@ -10,6 +12,7 @@ export default function Contacts({ contacts, changeChat }) {
   const [currentSelected, setCurrentSelected] = useState(undefined);
   const [searchQuery, setSearchQuery] = useState(""); // Added state for search query
   const [filteredContacts, setFilteredContacts] = useState(contacts); // Filtered contacts based on search query
+  const [searchContacts, setSearchContacts] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -28,23 +31,42 @@ export default function Contacts({ contacts, changeChat }) {
     fetchUserData();
   }, []);
 
+  // Fetch all users and update searchContacts state
+  useEffect(() => {
+    const fetchSearchContacts = async () => {
+      try {
+        const storedData = localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY);
+        const currentUser = storedData ? JSON.parse(storedData) : null;
+        if (currentUser) {
+          const { data } = await axiosInstance.get(`${allUsersRoute}/${currentUser._id}`);
+          setSearchContacts(data); // Filter contacts based on search query
+        }
+      } catch (error) {
+        console.error("Error fetching contacts:", error);
+      }
+    };
+    fetchSearchContacts();
+  }, []);
+  
+
    // Filter contacts based on the search query
    useEffect(() => {
     if (searchQuery === "") {
       setFilteredContacts(contacts); // Show all contacts when no search query
     } else {
       setFilteredContacts(
-        contacts.filter((contact) =>
+        searchContacts.filter((contact) =>
           contact.username.toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     }
-  }, [searchQuery, contacts]);
+  }, [searchQuery, contacts, searchContacts]);
 
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
     changeChat(contact);
   };
+
 
   return (
     <>
@@ -68,11 +90,16 @@ export default function Contacts({ contacts, changeChat }) {
                 />
             </div>
             {filteredContacts.length === 0 ? (
-              <div className="no-results mt-5">
+              <div className="no-results mt-5 flex flex-col justify-center items-center">
                 <p className="text-orange-800">No contacts found!</p>
+                {contacts.length === 0 &&
+                  <p className="text-white text-lg">Search and start your first Conversation.</p>
+                }
               </div>
             ) : (
               filteredContacts.map((contact, index) => {
+                const lastMessageContact = contacts.find(c => c._id === contact._id);
+
                 return (
                   <div
                     key={contact._id}
@@ -90,7 +117,12 @@ export default function Contacts({ contacts, changeChat }) {
                     </div>
                     <div className="username flex flex-col gap-0">
                       <h3>{contact.username}</h3>
-                      <span className="text-gray-500 text-sm">Last message</span>
+                      <span 
+                        className={`text-sm ${contacts.filter(c => c._id == contact._id)?.lastMessage?.sender === "You" ? 'text-gray-500' : 'text-gray-500'}`}>
+                        {/* Check if lastMessageContact and lastMessage exist before rendering */}
+                        {lastMessageContact?.lastMessage?.sender === "You" && "You: "}
+                        {lastMessageContact?.lastMessage?.text || "No messages yet"}
+                      </span>
                     </div>
                   </div>
                 );

@@ -2,7 +2,10 @@
 /venv
 
 # Model and Large File Directories
-/bert
+/models/bert
+/models/lr
+/models/rf
+/models/roberta
 /lr
 /rf
 /roberta
