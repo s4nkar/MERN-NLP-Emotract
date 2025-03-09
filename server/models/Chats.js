@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const ChatsSchema = new mongoose.Schema(
   {
     participants: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+      { type: mongoose.Schema.Types.ObjectId, ref: "Users" }
     ],
     is_group: {
       type: Boolean,
@@ -18,7 +18,7 @@ const ChatsSchema = new mongoose.Schema(
       unique: true,
     },
     group_admins: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+      { type: mongoose.Schema.Types.ObjectId, ref: "Users" }
     ],
     is_active: {
       type: Boolean,
@@ -28,7 +28,7 @@ const ChatsSchema = new mongoose.Schema(
       text: { type: String },
       sender_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Users",
       },
       sent_at: {
         type: Date,

@@ -9,7 +9,7 @@ const MessageSchema = mongoose.Schema(
     },
     sender_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Users",
       required: true,
     },
     text: { type: String, required: true },
@@ -18,7 +18,7 @@ const MessageSchema = mongoose.Schema(
       default: Date.now,
     },
     read_by: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+      { type: mongoose.Schema.Types.ObjectId, ref: "Users" }
     ],
     is_active: {
       type: Boolean,
@@ -31,7 +31,7 @@ const MessageSchema = mongoose.Schema(
     reaction: {
       emoji: { type: String },
       reacted_by: [
-        { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+        { type: mongoose.Schema.Types.ObjectId, ref: "Users" }
       ],
       reacted_at: {
         type: Date,

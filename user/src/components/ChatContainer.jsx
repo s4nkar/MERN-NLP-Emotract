@@ -83,7 +83,13 @@ export default function ChatContainer({ currentChat }) {
       is_group: false,
     });
   
-    setMessages((prevMsgs) => [...prevMsgs, { fromSelf: true, message: msg }]);
+    setMessages((prevMsgs) => {
+      if (Array.isArray(prevMsgs)) {
+        return [...prevMsgs, { fromSelf: true, message: msg }];
+      } else {
+        return [{ fromSelf: true, message: msg }]; // Default to an array if prevMsgs is not an array
+      }
+    });
   };
   
   useEffect(() => {
@@ -136,16 +142,16 @@ export default function ChatContainer({ currentChat }) {
       <div className="text-yellow-700 p-3 rounded-lg text-center text-sm w-full mt-2">
         🔒 Messages you send to this chat and calls are now secured with encryption. Tap for more info.
       </div>
-        {messages.map((message) => {
+        {messages.length > 0 && messages.map((message) => {
           return (
             <div ref={scrollRef} key={uuidv4()}>
               <div
                 className={`message ${
-                  message.fromSelf ? "sended" : "recieved"
+                  message?.fromSelf ? "sended" : "recieved"
                 }`}
               >
                 <div className="content ">
-                  <p>{message.message}</p>
+                  <p>{message?.message}</p>
                 </div>
               </div>
             </div>

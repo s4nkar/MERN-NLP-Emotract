@@ -13,7 +13,7 @@ export const getMessages = async (req, res, next) => {
     // Find chat between users
     const chat = await Chats.findOne({ participants: { $all: [from, to] } });
     if (!chat) {
-      return res.status(404).json({ msg: "No chat found between the users" });
+      return res.status(200).json({ msg: "No chat found between the users" });
     }
 
     // Query messages for the chat
@@ -54,7 +54,7 @@ export const addMessage = async (req, res, next) => {
     if (chats.length === 0) {
       chat = await Chats.create({
         participants: [from, to],
-        is_group: is_group || false,
+        is_group: is_group,
         last_message: {
           text: message,
           sender_id: from,
