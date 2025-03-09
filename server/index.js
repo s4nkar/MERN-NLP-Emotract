@@ -8,8 +8,9 @@ import logger  from "./middleware/logger.js";
 import swaggerDocs from './config/swagger.js';
 import connectRedis from "./config/redis.js";
 import dotenv from "dotenv";
-import handleprocessingMessages from "./utils/processEmotion.js";
+// import handleprocessingMessages from "./utils/processEmotion.js";
 import { setupSocket } from "./config/socket.js";
+import handleTime from "./utils/processEmotion.js";
 
 dotenv.config();
 
@@ -44,7 +45,7 @@ app.use("/api/v1/messages", v1MessageRoutes);
 swaggerDocs(app);
 
 // Run the cron job every 5 seconds to process new messages
-cron.schedule('*/10 * * * * *', handleprocessingMessages);
+cron.schedule('*/10 * * * * *', handleTime);
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () =>

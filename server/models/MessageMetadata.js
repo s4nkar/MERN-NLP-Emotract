@@ -31,6 +31,7 @@ const MessageMetadataSchema = mongoose.Schema(
         type: Boolean,
         default: false,
     },
+    // out of 4 models 
     sentiment_score: {
         type: Number,
         default: 0,

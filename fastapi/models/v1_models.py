@@ -1,7 +1,10 @@
-from utils import emotions
+from utils.emotions_labels import emotions
 from transformers import RobertaTokenizer, RobertaForSequenceClassification, BertForSequenceClassification, BertTokenizer
 import torch
 import joblib
+
+# v1 models return simply emtions based on the input text 
+# use v2 models if you want emtions along with predicted probabilities
 
 def bert_model(text) -> str:
     bert_model = BertForSequenceClassification.from_pretrained('bert/model')

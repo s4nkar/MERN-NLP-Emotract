@@ -1,14 +1,11 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-from fastapi.responses import JSONResponse
-from models import *
+from api.v1.nlp_route import router as nlp_router
 import logging
 
 app = FastAPI()
 
-# Request Body Schema
-class TextRequest(BaseModel):
-    text: str
+# Include the router with a prefix
+app.include_router(nlp_router, prefix="/api/v1", tags=["NLP"])
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -19,27 +16,11 @@ def read_root():
     logger.debug("Root endpoint is being accessed.")
     return "Fast Api Server Running  Dev mode ..." 
 
-@app.post("/analyze/")
-async def analyze_sentiment(request: TextRequest):
-    text = request.text
-
-    data = [
-        # BERT MODEL
-        bert_model(text),
-        
-        # RoBERTa MODEL
-        roberta_model(text),
-
-        # LR MODEL
-        lr_model(text),
-        
-        # RF MODEL
-        rf_model(text)
-    ]
-
-    return JSONResponse(content={"data": data})
+@app.get("/test/")
+async def test_route():
+    return {"message": "Test route working"}
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, port=8000, reload=True)
+    uvicorn.run(app, port=8000, reload=True)  
