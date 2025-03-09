@@ -5,6 +5,7 @@ import { sendResetEmail } from "../../config/email.js";
 import Users from "../../models/Users.js";
 import PasswordReset from "../../models/PasswordReset.js";
 import { client } from "../../index.js";
+import Chats from "../../models/Chats.js";
 
 
 export const login = async (req, res, next) => {
@@ -104,6 +105,7 @@ export const register = async (req, res, next) => {
   }
 };
 
+// get all users exepct current user 
 export const getAllUsers = async (req, res, next) => {
   try {
     const users = await Users.find({ _id: { $ne: req.params.id } }).select([
@@ -112,11 +114,55 @@ export const getAllUsers = async (req, res, next) => {
       "avatarImage",
       "_id",
     ]);
+
     return res.json(users);
   } catch (ex) {
     next(ex);
   }
 };
+
+// get all contact users 
+export const getAllContactsUsers = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Find all chats where the user is a participant
+    const chats = await Chats.find({ participants: id })
+      .populate("participants", "username avatarImage email _id") // Get user details
+      .lean(); // Convert Mongoose documents to plain objects for performance
+
+    // Extract unique contacts from chats
+    const contacts = [];
+    const addedUserIds = new Set(); // To avoid duplicates
+
+    chats.forEach((chat) => {
+      chat.participants.forEach((participant) => {
+        if (participant._id.toString() !== id && !addedUserIds.has(participant._id.toString())) {
+          contacts.push({
+            _id: participant._id,
+            username: participant.username,
+            avatarImage: participant.avatarImage,
+            email: participant.email,
+            lastMessage: chat.last_message
+              ? {
+                  text: chat.last_message.text || "",
+                  sender: chat.last_message.sender_id.toString() === id ? "You" : "Them",
+                  sentAt: chat.last_message.sent_at || null,
+                }
+              : null,
+          });
+          addedUserIds.add(participant._id.toString());
+        }
+      });
+    });
+
+    return res.json(contacts);
+  } catch (ex) {
+    console.error(ex);
+    next(new Error("Internal server error while fetching contacts"));
+  }
+};
+
 
 export const setAvatar = async (req, res, next) => {
   try {
