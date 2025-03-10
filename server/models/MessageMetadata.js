@@ -1,42 +1,47 @@
 import mongoose from "mongoose";
 
-const MessageMetadataSchema = mongoose.Schema(
+const MessageMetadataSchema = new mongoose.Schema(
   {
     message_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Messages",
       required: true,
+      index: true, // ✅ Faster queries
     },
     // To store emotion from BERT model 
-    bert_emotion: {
-        type: String,
-        default: null,
-      },
+    bert: {
+      emotion: { type: String},
+      probability: { type: Number, min: 0, max: 1 },
+      sentiment: { type: String, enum: ["positive", "negative", "neutral"] },
+    },
     // To store emotion from RoBERTa model 
-    roberta_emotion: {
-        type: String,
-        default: null,
+    roberta: {
+      emotion: { type: String },
+      probability: { type: Number, min: 0, max: 1 },
+      sentiment: { type: String, enum: ["positive", "negative", "neutral"] },
     },
     // To store emotion from Logistic Regression model 
-    lr_emotion: {
-        type: String,
-        default: null,
+    logistic_regression: {
+      emotion: { type: String},
+      probability: { type: Number, min: 0, max: 1 },
+      sentiment: { type: String, enum: ["positive", "negative", "neutral"] },
     },
     // To store emotion from Random Forest model 
-    rf_emotion: {
-        type: String,
-        default: null,
+    random_forest: {
+      emotion: { type: String },
+      probability: { type: Number, min: 0, max: 1 },
+      sentiment: { type: String, enum: ["positive", "negative", "neutral"] },
     },
     is_flagged: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
-    // out of 4 models 
+    // Aggregate sentiment score
     sentiment_score: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
-},
+  },
   {
     timestamps: true,
   }
