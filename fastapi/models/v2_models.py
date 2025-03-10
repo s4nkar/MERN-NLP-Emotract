@@ -1,14 +1,20 @@
-from utils.emotions_labels import emotions
 from transformers import RobertaTokenizer, RobertaForSequenceClassification, BertForSequenceClassification, BertTokenizer
+from utils.emotions_labels import emotions
 import torch
 import joblib
+import os
 import torch.nn.functional as F
 
 # v2 models return emtions with predicted probabilities
 
+# Get the absolute path of the current script
+current_dir = os.path.dirname(os.path.abspath(__file__))  
+
+
 def bert_model(text) -> str:
-    bert_model = BertForSequenceClassification.from_pretrained('bert/model')
-    tokenizer = BertTokenizer.from_pretrained('bert/tokenizer')
+    print(os.path.join(current_dir, "bert/model"))
+    bert_model = BertForSequenceClassification.from_pretrained(os.path.join(current_dir, "bert/model"))
+    tokenizer = BertTokenizer.from_pretrained(os.path.join(current_dir, "bert/tokenizer"))
 
     bert_model.eval()  # Set model to evaluation mode
 
@@ -37,8 +43,8 @@ def bert_model(text) -> str:
     return emotions[label], predicted_probability
 
 def roberta_model(text) -> str:
-    roberta_model = RobertaForSequenceClassification.from_pretrained('roberta/model')
-    tokenizer = RobertaTokenizer.from_pretrained('roberta/tokenizer')
+    roberta_model = RobertaForSequenceClassification.from_pretrained(os.path.join(current_dir, 'roberta/model'))
+    tokenizer = RobertaTokenizer.from_pretrained(os.path.join(current_dir, 'roberta/tokenizer'))
 
     # Set the model to evaluation mode
     roberta_model.eval()
@@ -69,8 +75,8 @@ def roberta_model(text) -> str:
     return emotions[label], predicted_probability
 
 def lr_model(text) -> str:
-    lr_model = joblib.load('lr/lr_model.pkl')  # Load the Logistic Regression model
-    vectorizer = joblib.load('lr/vectorizer.pkl') # Load the TF-IDF vectorizer
+    lr_model = joblib.load(os.path.join(current_dir, 'lr/lr_model.pkl'))  # Load the Logistic Regression model
+    vectorizer = joblib.load(os.path.join(current_dir, 'lr/vectorizer.pkl')) # Load the TF-IDF vectorizer
 
     new_features = vectorizer.transform([text])  # Transform input text into features using the vectorizer
 
@@ -89,8 +95,8 @@ def lr_model(text) -> str:
     return emotions[predicted_label], predicted_probability
 
 def rf_model(text) -> str:
-    rf_model = joblib.load('rf/rf_model.pkl')  # Load the Random Forest model
-    vectorizer = joblib.load('rf/vectorizer.pkl')  # Load the TF-IDF vectorizer 
+    rf_model = joblib.load(os.path.join(current_dir, 'rf/rf_model.pkl'))  # Load the Random Forest model
+    vectorizer = joblib.load(os.path.join(current_dir, 'rf/vectorizer.pkl'))  # Load the TF-IDF vectorizer 
 
     # Transform the input text into features using the vectorizer
     new_features = vectorizer.transform([text]) 
@@ -112,6 +118,7 @@ def rf_model(text) -> str:
 
 # text = "test message"
 # b = bert_model(text)
+# print(b)
 # # RoBERTa MODEL
 # r = roberta_model(text)
 # # LR MODEL
