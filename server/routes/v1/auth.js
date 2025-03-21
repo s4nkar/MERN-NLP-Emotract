@@ -9,6 +9,7 @@ import {
   refreshToken,
   getUserOnlineStatus,
   getAllContactsUsers,
+  getCompleteUsersDetails,
 } from "../../controllers/v1/userController.js";
 import express from "express";
 
@@ -195,6 +196,8 @@ v1AuthRoutes.post("/register", register);
 v1AuthRoutes.get("/all-users/:id", getAllUsers);
 
 v1AuthRoutes.get("/all-contact-users/:id", getAllContactsUsers);
+
+v1AuthRoutes.get("/complete-users/", getCompleteUsersDetails);
 
 /**
  * @swagger

@@ -8,7 +8,6 @@ import logger  from "./middleware/logger.js";
 import swaggerDocs from './config/swagger.js';
 import connectRedis from "./config/redis.js";
 import dotenv from "dotenv";
-// import handleprocessingMessages from "./utils/processEmotion.js";
 import { setupSocket } from "./config/socket.js";
 import handleTime from "./utils/processEmotion.js";
 

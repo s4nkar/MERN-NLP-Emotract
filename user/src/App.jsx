@@ -18,8 +18,6 @@ function App() {
           <Route path="/setAvatar" element={<SetAvatar />} />
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<Chat />} />
-            <Route path="/next1" element={<Chat />} />
-            <Route path="/next2" element={<Chat />} />
           </Route>
         </Routes>
       </BrowserRouter>
