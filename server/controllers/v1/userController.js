@@ -119,22 +119,6 @@ export const getAllUsers = async (req, res, next) => {
   }
 };
 
-// get all users  
-export const getCompleteUsersDetails = async (req, res, next) => {
-  try {
-    const users = await Users.find({ is_active: true })
-    .select(
-      "email username avatarImage _id age firstname lastname phone imageUrl age_verified is_flagged flag_count last_active"
-    );
- 
-    const limit = parseInt(req.query.limit) || users.length;
-
-    return res.json(users.slice(0, limit));
-  } catch (ex) {
-    next(ex);
-  }
-};
-
 
 // get all contact users 
 export const getAllContactsUsers = async (req, res, next) => {
