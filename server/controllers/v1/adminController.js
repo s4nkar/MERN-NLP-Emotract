@@ -3,7 +3,7 @@ import Users from "../../models/Users.js";
 // get all users  
 export const getCompleteUsersDetails = async (req, res, next) => {
   try {
-    const users = await Users.find({ is_active: true })
+    const users = await Users.find({ is_active: true, role: "USER" })
     .select(
       "email username avatarImage _id age firstname lastname phone imageUrl age_verified is_flagged flag_count last_active"
     );
