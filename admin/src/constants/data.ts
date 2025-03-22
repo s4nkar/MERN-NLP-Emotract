@@ -133,6 +133,8 @@ export const dashboardCard = [
 
 export type Employee = {
   id: number;
+  _id: string;
+  is_flagged: boolean;
   firstname: string;
   lastname: string;
   email: string;

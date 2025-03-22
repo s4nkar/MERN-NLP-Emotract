@@ -41,8 +41,16 @@ export const columns: ColumnDef<Employee>[] = [
     header: 'AGE'
   },
   {
-    accessorKey: 'is_flagged',
-    header: 'FLAGGED'
+    id: 'is_flagged', 
+    accessorFn: (row) => row.is_flagged,  // Accessor function for raw value
+    header: 'STATUS',
+    cell: ({ row }) => (
+      row.getValue('is_flagged') ? (
+        <span className="bg-red-500 text-white p-1 rounded">Blocked</span>
+      ) : (
+        <span className="bg-green-500 text-white p-1 rounded">Active</span>
+      )
+    )
   },
   {
     accessorKey: 'flag_count',
