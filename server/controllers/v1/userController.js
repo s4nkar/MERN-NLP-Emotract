@@ -126,7 +126,7 @@ export const getAllContactsUsers = async (req, res, next) => {
     const { id } = req.params;
 
     // Find all chats where the user is a participant
-    const chats = await Chats.find({ participants: id })
+    const chats = await Chats.find({ participants: id, is_active: true  })
       .populate("participants", "username avatarImage email _id") // Get user details
       .lean(); // Convert Mongoose documents to plain objects for performance
 

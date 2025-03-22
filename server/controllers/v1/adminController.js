@@ -21,14 +21,64 @@ export const blockUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
 
-    await Users.findByIdAndUpdate(
+    const updatedUser = await Users.findByIdAndUpdate(
       userId,
       {
         is_flagged: true
       }
     )
 
-    return res.status(200).json({ status: true, messsage: "User blocked" });
+    if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+    return res.status(200).json({ status: true, messsage: "User successfully blocked" });
+  } catch (ex) {
+    res.status(500).json({ status: false, message: ex });
+    next(ex);
+  }
+};
+
+// Unblock user 
+export const unBlockUser = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+
+    const updatedUser = await Users.findByIdAndUpdate(
+      userId,
+      {
+        is_flagged: false
+      }
+    )
+
+    if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+    return res.status(200).json({ status: true, messsage: "User successfully unblocked" });
+  } catch (ex) {
+    res.status(500).json({ status: false, message: ex });
+    next(ex);
+  }
+};
+
+// Delete a  user (soft delete) 
+export const deleteUser = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+
+    const updatedUser = await Users.findByIdAndUpdate(
+      userId,
+      {
+        is_active: false
+      }
+    )
+
+    if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+    return res.status(200).json({ status: true, messsage: "User deleted" });
   } catch (ex) {
     res.status(500).json({ status: false, message: ex });
     next(ex);

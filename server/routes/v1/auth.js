@@ -1,7 +1,9 @@
 import express from "express";
 import { 
   blockUser,
-  getCompleteUsersDetails
+  deleteUser,
+  getCompleteUsersDetails,
+  unBlockUser
 } from "../../controllers/v1/adminController.js";
 import { 
   login, 
@@ -15,6 +17,7 @@ import {
   getUserOnlineStatus,
   getAllContactsUsers,
 } from "../../controllers/v1/userController.js";
+import { verifyAccessToken } from "../../middleware/authMiddleware.js";
 
 const v1AuthRoutes = express.Router();
 
@@ -547,9 +550,13 @@ v1AuthRoutes.get("/online-status/:id", getUserOnlineStatus);
 v1AuthRoutes.post("/logout", logOut);
 
 // ADMIN ROUTES
-v1AuthRoutes.get("/complete-users/", getCompleteUsersDetails);
+v1AuthRoutes.get("/complete-users/", verifyAccessToken, getCompleteUsersDetails);
 
 v1AuthRoutes.patch("/block-user/:id", blockUser);
+
+v1AuthRoutes.patch("/unblock-user/:id", unBlockUser);
+
+v1AuthRoutes.delete("/delete-user/:id", deleteUser);
 
 
 export default v1AuthRoutes;
