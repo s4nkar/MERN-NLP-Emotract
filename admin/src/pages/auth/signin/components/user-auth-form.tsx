@@ -8,14 +8,21 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { loginRoute } from '@/constants/api';
 import { useRouter } from '@/routes/hooks';
+import axiosInstance from '@/utils/axiosInstance';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Enter a valid email address' })
+  username: z.string().min(3, {message: 'Enter a valid Username'} ),
+
+  password: z.string()
+    .min(8, { message: 'Password must be at least 8 characters long' })
+    .regex(/[a-zA-Z]/, { message: 'Password must contain at least one letter' })
+    .regex(/\d/, { message: 'Password must contain at least one number' })
 });
 
 type UserFormValue = z.infer<typeof formSchema>;
@@ -24,16 +31,35 @@ export default function UserAuthForm() {
   const router = useRouter();
   const [loading] = useState(false);
   const defaultValues = {
-    email: 'demo@gmail.com'
+    username: '',
+    password: '',
   };
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues
   });
 
-  const onSubmit = async (data: UserFormValue) => {
-    console.log('data', data);
-    router.push('/');
+  const onSubmit = async (values: UserFormValue) => {
+    try {
+          const { username, password } = values;
+          
+          const response = await axiosInstance.post(loginRoute, { username, password, role: "ADMIN" });
+          const { data } = response; // Extract data from response
+      
+          if (!data.status) {
+            alert(data.message);
+            return;
+          }
+      
+          // Store user data and token in localStorage
+          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("refreshToken", data.refreshToken);
+          localStorage.setItem(import.meta.env.VITE_LOCALHOST_KEY, JSON.stringify(data.user));
+          router.push("/");
+    
+        } catch (error: Error | unknown) { 
+          console.error("Login error:", error);
+        }
   };
 
   return (
@@ -45,14 +71,32 @@ export default function UserAuthForm() {
         >
           <FormField
             control={form.control}
-            name="email"
+            name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input
-                    type="email"
-                    placeholder="Enter your email..."
+                    type="Username"
+                    placeholder="Enter your Username..."
+                    disabled={loading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Enter your password..."
                     disabled={loading}
                     {...field}
                   />
@@ -63,7 +107,7 @@ export default function UserAuthForm() {
           />
 
           <Button disabled={loading} className="ml-auto w-full" type="submit">
-            Continue With Email
+            Login
           </Button>
         </form>
       </Form>
