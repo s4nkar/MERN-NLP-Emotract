@@ -18,6 +18,7 @@ import {
   getAllContactsUsers,
 } from "../../controllers/v1/userController.js";
 import { verifyAccessToken } from "../../middleware/authMiddleware.js";
+import { isAdmin } from "../../middleware/isAdmin.js";
 
 const v1AuthRoutes = express.Router();
 
@@ -550,13 +551,13 @@ v1AuthRoutes.get("/online-status/:id", getUserOnlineStatus);
 v1AuthRoutes.post("/logout", logOut);
 
 // ADMIN ROUTES
-v1AuthRoutes.get("/complete-users/", getCompleteUsersDetails);
+v1AuthRoutes.get("/complete-users/", verifyAccessToken, isAdmin , getCompleteUsersDetails);
 
-v1AuthRoutes.patch("/block-user/:id", blockUser);
+v1AuthRoutes.patch("/block-user/:id", verifyAccessToken, isAdmin , blockUser);
 
-v1AuthRoutes.patch("/unblock-user/:id", unBlockUser);
+v1AuthRoutes.patch("/unblock-user/:id", verifyAccessToken, isAdmin , unBlockUser);
 
-v1AuthRoutes.delete("/delete-user/:id", deleteUser);
+v1AuthRoutes.delete("/delete-user/:id", verifyAccessToken, isAdmin , deleteUser);
 
 
 export default v1AuthRoutes;

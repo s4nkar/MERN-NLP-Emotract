@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
       
       // Handle Unauthorized User
       alert("Access Denied! Only admins can perform this action.");
-      window.location.href = "/"; // Redirect to home or an error page
+      // window.location.href = "/"; // Redirect to home or an error page
       return Promise.reject(error);
     }
 
