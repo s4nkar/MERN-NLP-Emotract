@@ -1,3 +1,4 @@
+import PrivateRoute from '@/pages/auth/PrivateRoute';
 import FormPage from '@/pages/form';
 import NotFound from '@/pages/not-found';
 import { Suspense, lazy } from 'react';
@@ -7,6 +8,7 @@ const DashboardLayout = lazy(
   () => import('@/components/layout/dashboard-layout')
 );
 const SignInPage = lazy(() => import('@/pages/auth/signin'));
+const Logout = lazy(() => import('@/pages/auth/logout/index'));
 const DashboardPage = lazy(() => import('@/pages/dashboard'));
 const StudentPage = lazy(() => import('@/pages/students'));
 const StudentDetailPage = lazy(
@@ -20,11 +22,13 @@ export default function AppRouter() {
     {
       path: '/',
       element: (
-        <DashboardLayout>
-          <Suspense>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
+        <PrivateRoute>
+          <DashboardLayout>
+            <Suspense>
+              <Outlet />
+            </Suspense>
+          </DashboardLayout>
+        </PrivateRoute>
       ),
       children: [
         {
@@ -51,6 +55,11 @@ export default function AppRouter() {
     {
       path: '/login',
       element: <SignInPage />,
+      index: true
+    },
+    {
+      path: '/logout',
+      element: <Logout />,
       index: true
     },
     {

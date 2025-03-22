@@ -24,24 +24,29 @@ export const columns: ColumnDef<Employee>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'first_name',
-    header: 'NAME'
+    // accessorKey: 'firstname + lastname',
+    accessorFn: (row) => `${row.firstname} ${row.lastname}`,
+    header: 'NAME',
   },
   {
-    accessorKey: 'country',
-    header: 'COUNTRY'
+    accessorKey: 'username',
+    header: 'USERNAME'
   },
   {
     accessorKey: 'email',
     header: 'EMAIL'
   },
   {
-    accessorKey: 'job',
-    header: 'COMPANY'
+    accessorKey: 'age',
+    header: 'AGE'
   },
   {
-    accessorKey: 'gender',
-    header: 'GENDER'
+    accessorKey: 'is_flagged',
+    header: 'FLAGGED'
+  },
+  {
+    accessorKey: 'flag_count',
+    header: 'FLAG COUNT'
   },
   {
     id: 'actions',

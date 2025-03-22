@@ -28,7 +28,7 @@ import {
   useReactTable
 } from '@tanstack/react-table';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 interface DataTableProps<TData, TValue> {
@@ -45,8 +45,12 @@ export default function DataTable<TData, TValue>({
   pageSizeOptions = [10, 20, 30, 40, 50]
 }: DataTableProps<TData, TValue>) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [filteredData, setFilteredData] = useState<TData[]>(data); // State to store filtered data
+
   // Search params
   const page = searchParams?.get('page') ?? '1';
+  const searchTerm = searchParams?.get('search') ?? '';
+
   const pageAsNumber = Number(page);
   const fallbackPage =
     isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber;
@@ -70,8 +74,24 @@ export default function DataTable<TData, TValue>({
     // if search is there setting filter value
   }, [pageIndex, pageSize, searchParams, setSearchParams]);
 
+   // Search handler - Update the filtered data based on search term
+   React.useEffect(() => {
+    if (searchTerm === '') {
+      setFilteredData(data); // If search term is empty, reset to original data
+    } else {
+      const lowercasedSearchTerm = searchTerm.toLowerCase();
+      const filtered = data.filter((row) => {
+        const searchableColumns = ['firstname', 'email', 'username']; // Specify any columns you want to search
+        return searchableColumns.some((column) =>
+          row[column]?.toLowerCase().includes(lowercasedSearchTerm)
+        );
+      });
+      setFilteredData(filtered);
+    }
+  }, [searchTerm, data]);
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     pageCount: pageCount ?? -1,
     getCoreRowModel: getCoreRowModel(),

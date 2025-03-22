@@ -1,9 +1,9 @@
-import { getStudents } from '@/lib/api';
+import { getUsers } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 
-export const useGetStudents = (offset, pageLimit, country) => {
+export const useGetStudents = () => {
   return useQuery({
-    queryKey: ['students', offset, pageLimit, country],
-    queryFn: async () => getStudents(offset, pageLimit, country)
+    queryKey: ['users'],
+    queryFn: async () => getUsers()
   });
 };
