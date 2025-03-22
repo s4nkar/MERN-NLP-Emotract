@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { allContactUsersRoute } from "../utils/APIRoutes";
@@ -59,12 +59,37 @@ export default function Chat() {
     };
   
     fetchContacts();
-  }, [currentUser, navigate]); // Added navigate as a dependency
-  
+  }, [currentUser, navigate]);
 
+  // Handle new contact after message
+  const handleContactAfterMessage = useCallback(
+    (updatedContact) => {
+      setContacts((prevContacts) => {
+        const isContactExist = prevContacts.some(contact => contact._id === updatedContact._id);
+  
+        if (isContactExist) {
+          // Update existing contact's last_message
+          return [...prevContacts.map(contact =>
+            contact._id === updatedContact._id
+              ? { ...contact, last_message: updatedContact.last_message }
+              : contact
+          )]; // ✅ Return a NEW array to trigger re-render
+        } else {
+          // Add new contact with last_message
+          return [...prevContacts, updatedContact]; // ✅ Spread operator forces a new reference
+        }
+      });
+    },
+    [setContacts]
+  );
+  
+  
   const handleChatChange = (chat) => {
     setCurrentChat(chat);
   };
+
+
+
   return (
     <>
       <Container>
@@ -73,7 +98,7 @@ export default function Chat() {
           {currentChat === undefined ? (
             <Welcome />
           ) : (
-            <ChatContainer currentChat={currentChat}  />
+            <ChatContainer currentChat={currentChat} handleContactAfterMessage={handleContactAfterMessage}  />
           )}
         </div>
       </Container>

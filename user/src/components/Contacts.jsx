@@ -31,6 +31,12 @@ export default function Contacts({ contacts, changeChat }) {
     fetchUserData();
   }, []);
 
+  useEffect(() => {
+    console.log("Updated contacts in Contacts component:", contacts);
+  }, [contacts]);
+  
+  
+
   // Fetch all users and update searchContacts state
   useEffect(() => {
     const fetchSearchContacts = async () => {
@@ -108,21 +114,21 @@ export default function Contacts({ contacts, changeChat }) {
                     } hover:bg-[#dedede34]`}
                     onClick={() => changeCurrentChat(index, contact)}
                   >
-                    <div className="avatar">
+                    <div className="avatar min-w-[15%]">
                       <img
                         src={contact.avatarImage ? contact.avatarImage : fallBackImage}
                         className="w-12 h-12 rounded-full border-1 border-gray-400"
                         alt=""
                       />
                     </div>
-                    <div className="username flex flex-col gap-0">
+                    <div className="username flex flex-col gap-0  w-[80%]">
                       <h3>{contact.username}</h3>
-                      <span 
-                        className={`text-sm ${contacts.filter(c => c._id == contact._id)?.lastMessage?.sender === "You" ? 'text-gray-500' : 'text-gray-500'}`}>
+                      <div 
+                        className={`text-sm  truncate ${contacts.filter(c => c._id == contact._id)?.lastMessage?.sender === "You" ? 'text-gray-500' : 'text-gray-500'}`}>
                         {/* Check if lastMessageContact and lastMessage exist before rendering */}
                         {lastMessageContact?.lastMessage?.sender === "You" && "You: "}
-                        {lastMessageContact?.lastMessage?.text || "No messages yet"}
-                      </span>
+                        <span className="">{lastMessageContact?.lastMessage?.text || "No messages yet"}</span>
+                      </div>
                     </div>
                   </div>
                 );
