@@ -55,6 +55,11 @@ export const login = async (req, res, next) => {
 export const register = async (req, res, next) => {
   try {
     const { username, email, password, aadhaar_number, firstname, lastname, parent_email, age, phone } = req.body;
+    const role = req.body?.role?.toUpperCase() || "USER";
+
+    if (role === "ADMIN") {
+      return res.status(400).json({ message: "You can't register with an admin role" });
+    }
     
     const ageVerified = parseInt(age) >= 18;
     
@@ -108,12 +113,11 @@ export const register = async (req, res, next) => {
 // get all users exepct current user 
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await Users.find({ _id: { $ne: req.params.id } }).select([
-      "email",
-      "username",
-      "avatarImage",
-      "_id",
-    ]);
+    const users = await Users.find({ 
+      _id: { $ne: req.params.id }, 
+      is_active: true,
+      role: "USER",
+    }).select("email username avatarImage _id");  
 
     return res.json(users);
   } catch (ex) {
@@ -121,13 +125,14 @@ export const getAllUsers = async (req, res, next) => {
   }
 };
 
+
 // get all contact users 
 export const getAllContactsUsers = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     // Find all chats where the user is a participant
-    const chats = await Chats.find({ participants: id })
+    const chats = await Chats.find({ participants: id, is_active: true  })
       .populate("participants", "username avatarImage email _id") // Get user details
       .lean(); // Convert Mongoose documents to plain objects for performance
 

@@ -1,3 +1,10 @@
+import express from "express";
+import { 
+  blockUser,
+  deleteUser,
+  getCompleteUsersDetails,
+  unBlockUser
+} from "../../controllers/v1/adminController.js";
 import { 
   login, 
   register, 
@@ -10,9 +17,11 @@ import {
   getUserOnlineStatus,
   getAllContactsUsers,
 } from "../../controllers/v1/userController.js";
-import express from "express";
+import { verifyAccessToken } from "../../middleware/authMiddleware.js";
 
 const v1AuthRoutes = express.Router();
+
+// USER ROUTES
 
 /**
  * @swagger
@@ -539,5 +548,15 @@ v1AuthRoutes.get("/online-status/:id", getUserOnlineStatus);
  *                   example: false
  */
 v1AuthRoutes.post("/logout", logOut);
+
+// ADMIN ROUTES
+v1AuthRoutes.get("/complete-users/", getCompleteUsersDetails);
+
+v1AuthRoutes.patch("/block-user/:id", blockUser);
+
+v1AuthRoutes.patch("/unblock-user/:id", unBlockUser);
+
+v1AuthRoutes.delete("/delete-user/:id", deleteUser);
+
 
 export default v1AuthRoutes;

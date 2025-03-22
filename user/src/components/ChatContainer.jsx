@@ -7,13 +7,13 @@ import axiosInstance from "../utils/axiosInstance";
 import fallBackImage from "../assets/avatars/avatar.png"
 import { useSocket } from "../context/SocketProvider";
 
-export default function ChatContainer({ currentChat }) {
+export default function ChatContainer({ currentChat, handleContactAfterMessage }) {
   const [messages, setMessages] = useState([]); 
   const [currentUserOnlineStatus, setCurrentUserOnlineStatus] = useState(false); 
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const socket = useSocket();
-  
+
   useEffect(() => {
     const fetchMessages = async () => {
       const storedData = localStorage.getItem(import.meta.env.VITE_LOCALHOST_KEY);
@@ -52,7 +52,6 @@ export default function ChatContainer({ currentChat }) {
     const fetchCurrentOnlineStatus = async () => {
         try {
           const response = await axiosInstance.get(`${fetchCurrentOnlineStatusRoute}/${currentChat._id}`);
-          console.log({response});
           setCurrentUserOnlineStatus(response.data?.is_online);
         } catch (error) {
           console.error("Error fetching messages:", error);
@@ -90,6 +89,13 @@ export default function ChatContainer({ currentChat }) {
         return [{ fromSelf: true, message: msg }]; // Default to an array if prevMsgs is not an array
       }
     });
+
+    let last_message = {
+      text: msg,
+      sender_id: data._id,
+      sent_at: new Date(),
+    }
+    handleContactAfterMessage({ ...currentChat, last_message })
   };
   
   useEffect(() => {
