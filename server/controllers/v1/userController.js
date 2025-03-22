@@ -25,8 +25,8 @@ export const login = async (req, res, next) => {
       return res.status(401).json({ message: "Incorrect Username or Password", status: false });
 
     // Generate Tokens
-    const accessToken = jwt.sign({ userId: user._id }, "ACCESS_SECRET", { expiresIn: "15m" });
-    const refreshToken = jwt.sign({ userId: user._id }, "REFRESH_SECRET", { expiresIn: "7d" });
+    const accessToken = jwt.sign({ userId: user._id, role: user.role, }, process.env.JWT_SECRET, { expiresIn: "15m" });
+    const refreshToken = jwt.sign({ userId: user._id, role: user.role, }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
     if (!client.isOpen) {
       await client.connect();

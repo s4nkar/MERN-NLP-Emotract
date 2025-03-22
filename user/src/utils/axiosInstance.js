@@ -1,19 +1,17 @@
 import axios from "axios";
 
 export const host = import.meta.env.VITE_BACKEND_URL;
-console.log("host",host)
-
-const API_BASE_URL = `${host}/api/v1/`; // Change based on backend URL
+const API_BASE_URL = `${host}/api/v1/`;
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true, // Ensures cookies are sent with requests (if using HTTP-only cookies)
+  withCredentials: true, // Ensures cookies are sent with requests (for HTTP-only authentication)
 });
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    let accessToken = localStorage.getItem("accessToken");
-
+    const accessToken = localStorage.getItem("accessToken");
+    
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
@@ -27,10 +25,20 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     
-    if (error.response?.status === 403 && !originalRequest._retry) {
+    // If the user is not an admin and gets a 403 response
+    if (error.response?.status === 403) {
+      console.error("Access denied: Admins only.");
+      
+      // Handle Unauthorized User
+      alert("Access Denied! Only admins can perform this action.");
+      // window.location.href = "/"; // Redirect to home or an error page
+      return Promise.reject(error);
+    }
+
+    // If token expired, attempt to refresh it
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        // Call refresh token API to get a new access token
         const res = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
           refreshToken: localStorage.getItem("refreshToken"),
         });
@@ -38,14 +46,15 @@ axiosInstance.interceptors.response.use(
         const newAccessToken = res.data.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
 
-        // Retry the original request with the new access token
+        // Retry the original request with the new token
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        console.error("Refresh token failed:", refreshError);
+        console.error("Session expired. Please log in again.");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        window.location.href = "/login"; // Redirect to login page
+        localStorage.removeItem(import.meta.env.VITE_LOCALHOST_KEY);
+        window.location.href = "/login"; // Redirect to login
       }
     }
 
@@ -54,3 +63,5 @@ axiosInstance.interceptors.response.use(
 );
 
 export default axiosInstance;
+
+
