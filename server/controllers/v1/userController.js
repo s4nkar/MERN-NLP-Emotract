@@ -55,6 +55,11 @@ export const login = async (req, res, next) => {
 export const register = async (req, res, next) => {
   try {
     const { username, email, password, aadhaar_number, firstname, lastname, parent_email, age, phone } = req.body;
+    const role = req.body?.role?.toUpperCase() || "USER";
+
+    if (role === "ADMIN") {
+      return res.status(400).json({ message: "You can't register with an admin role" });
+    }
     
     const ageVerified = parseInt(age) >= 18;
     

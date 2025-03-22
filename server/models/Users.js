@@ -36,7 +36,6 @@ const usersSchema = new mongoose.Schema(
     },
     aadhaar_number: {
       type: String,
-      required: true,
       unique: true,
     },
     firstname: {
@@ -103,6 +102,11 @@ const usersSchema = new mongoose.Schema(
     avatarImage: {
       type: String,
       default: "",
+    },
+    role: {
+      type: String,
+      default: "USER",
+      enum: ["USER", "ADMIN"],
     },
   },
   {

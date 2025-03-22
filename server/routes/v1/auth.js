@@ -550,7 +550,7 @@ v1AuthRoutes.get("/online-status/:id", getUserOnlineStatus);
 v1AuthRoutes.post("/logout", logOut);
 
 // ADMIN ROUTES
-v1AuthRoutes.get("/complete-users/", verifyAccessToken, getCompleteUsersDetails);
+v1AuthRoutes.get("/complete-users/", getCompleteUsersDetails);
 
 v1AuthRoutes.patch("/block-user/:id", blockUser);
 
