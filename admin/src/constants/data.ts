@@ -14,8 +14,8 @@ export const navItems: NavItem[] = [
     label: 'users'
   },
   {
-    title: 'Login',
-    href: '/login',
+    title: 'Logout',
+    href: '/logout',
     icon: 'login',
     label: 'Login'
   }
@@ -133,8 +133,10 @@ export const dashboardCard = [
 
 export type Employee = {
   id: number;
-  first_name: string;
-  last_name: string;
+  _id: string;
+  is_flagged: boolean;
+  firstname: string;
+  lastname: string;
   email: string;
   phone: string;
   gender: string;

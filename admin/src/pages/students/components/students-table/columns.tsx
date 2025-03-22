@@ -24,24 +24,37 @@ export const columns: ColumnDef<Employee>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'first_name',
-    header: 'NAME'
+    // accessorKey: 'firstname + lastname',
+    accessorFn: (row) => `${row.firstname} ${row.lastname}`,
+    header: 'NAME',
   },
   {
-    accessorKey: 'country',
-    header: 'COUNTRY'
+    accessorKey: 'username',
+    header: 'USERNAME'
   },
   {
     accessorKey: 'email',
     header: 'EMAIL'
   },
   {
-    accessorKey: 'job',
-    header: 'COMPANY'
+    accessorKey: 'age',
+    header: 'AGE'
   },
   {
-    accessorKey: 'gender',
-    header: 'GENDER'
+    id: 'is_flagged', 
+    accessorFn: (row) => row.is_flagged,  // Accessor function for raw value
+    header: 'STATUS',
+    cell: ({ row }) => (
+      row.getValue('is_flagged') ? (
+        <span className="bg-red-500 text-white p-1 rounded">Blocked</span>
+      ) : (
+        <span className="bg-green-500 text-white p-1 rounded">Active</span>
+      )
+    )
+  },
+  {
+    accessorKey: 'flag_count',
+    header: 'FLAG COUNT'
   },
   {
     id: 'actions',

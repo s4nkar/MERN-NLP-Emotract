@@ -5,9 +5,9 @@ export const getCompleteUsersDetails = async (req, res, next) => {
   try {
     const users = await Users.find({ is_active: true, role: "USER" })
     .select(
-      "email username avatarImage _id age firstname lastname phone imageUrl age_verified is_flagged flag_count last_active"
+      "email username avatarImage _id age firstname lastname phone imageUrl age_verified is_flagged flag_count last_active parent_email"
     );
- 
+
     const limit = parseInt(req.query.limit) || users.length;
 
     return res.json(users.slice(0, limit));

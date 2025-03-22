@@ -24,7 +24,7 @@ export default function Sidebar({ className }: SidebarProps) {
       className={cn(
         `relative z-10 hidden h-screen flex-none  px-3 md:block`,
         status && 'duration-500',
-        !isMinimized ? 'w-72' : 'w-[80px]',
+        !isMinimized ? 'w-72' : 'w-[70px]',
         className
       )}
     >
@@ -34,10 +34,10 @@ export default function Sidebar({ className }: SidebarProps) {
           isMinimized ? 'justify-center ' : 'justify-between'
         )}
       >
-        {!isMinimized && <h1 className="text-2xl font-bold">Emotract V1</h1>}
+        {!isMinimized && <h1 className="text-xl font-bold">Emotract V1</h1>}
         <ChevronsLeft
           className={cn(
-            'size-8 cursor-pointer rounded-full border bg-background text-foreground',
+            'size-6 cursor-pointer rounded-full border bg-background text-foreground',
             isMinimized && 'rotate-180'
           )}
           onClick={handleToggle}

@@ -11,9 +11,10 @@ import Chats from "../../models/Chats.js";
 export const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
+    const role = req.body.role || "USER"
     
     // Check if user exists
-    const user = await Users.findOne({ username });
+    const user = await Users.findOne({ username, role });
 
     if (!user) 
       return res.status(401).json({ message: "Incorrect Username", status: false });

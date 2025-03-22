@@ -17,9 +17,13 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: [
+    process.env.FRONTEND_URL || "http://localhost:5173", // First allowed origin
+    process.env.ADMIN_URL || "http://localhost:5174" // Second allowed origin
+  ],
   credentials: true,
 }));
+
 
 app.use(express.json());
 

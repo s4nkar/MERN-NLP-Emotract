@@ -13,6 +13,7 @@ import {
   TabsTrigger
 } from '@/components/ui/tabs.js';
 import RecentSales from './components/recent-sales.js';
+import { AgeChart } from '@/components/charts/age-chart.js';
 
 export default function DashboardPage() {
   return (
@@ -135,12 +136,9 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7 pb-5">
               <Card className="col-span-4">
-                <CardHeader>
-                  <CardTitle>Overview</CardTitle>
-                </CardHeader>
-                <CardContent className="pl-2">{/* <Overview /> */}</CardContent>
+                <AgeChart/>
               </Card>
               <Card className="col-span-4 md:col-span-3">
                 <CardHeader>
