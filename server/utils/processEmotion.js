@@ -27,7 +27,7 @@ const processEmotion = async (messageId, text) => {
         }
         
         // Check if the sentiment is "negative" and has a high probability (above 70%)
-        else if (sentiment === "negative" && probability > 0.7) {
+        else if (sentiment === "negative" && probability > NEGATIVE_PROB_THRESHOLD) {
             sentiment_score -= 0.5;  // If negative sentiment is highly confident, reduce the score by 0.5 (penalty)
         }
 
@@ -62,7 +62,7 @@ const processEmotion = async (messageId, text) => {
     // Update the processing status in the Messages collection
     await Messages.findByIdAndUpdate(
       messageId,  // The message ID
-      { processing_status: 'processed' },  // Set the processing status to 'processed'
+      { processing_status: 'processed', is_flagged },  // Set the processing status to 'processed'
       { new: true }  // Return the updated document
     );
 

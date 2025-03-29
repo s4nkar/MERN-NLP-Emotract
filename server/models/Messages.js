@@ -28,6 +28,15 @@ const MessageSchema = mongoose.Schema(
       type: String,
       default: 'processing',
     },
+    message_status: {
+      type: String,
+      default: 'sent',
+      enum: ["sent", "delivered", "seen"]
+    },
+    is_flagged: {
+      type: Boolean,
+      default: false,
+    },
     reaction: {
       emoji: { type: String },
       reacted_by: [
