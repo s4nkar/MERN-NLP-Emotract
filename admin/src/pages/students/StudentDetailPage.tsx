@@ -36,7 +36,9 @@ export default function StudentDetailPage() {
         <div className=" col-span-1 flex flex-col gap-6 lg:col-span-1">
           <Card className="bg-secondary  shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] drop-shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between font-bold">
-              <p className="text-xl">{user?.firstname}{user?.lastname}</p>
+              <div className='truncate'>
+                <p className="text-xl">{user?.username}</p> 
+              </div>
               {user?.is_online ? (
                 <Badge className="bg-green-600">Active</Badge>
               ):(
@@ -55,6 +57,10 @@ export default function StudentDetailPage() {
               Basic Info
             </CardHeader>
             <CardContent className="text-sm text-[12px]">
+                <span className='flex gap-2'>
+                  <p className='font-semibold text-gray-400 capitalize'>Name: </p> 
+                  <p >{user?.firstname}{user?.lastname}</p>
+                </span>
               {basicDetails.map((detail, i) => (
                 <span key={i} className='flex gap-2'>
                   <p className='font-semibold text-gray-400 capitalize'>{detail}: </p> 
