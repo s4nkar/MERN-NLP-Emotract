@@ -27,6 +27,11 @@ export interface FooterItem {
   }[];
 }
 
+export interface PieChartProps {
+  name: string,
+  date: string,
+}
+
 export type MainNavItem = NavItemWithOptionalChildren;
 
 export type SidebarNavItem = NavItemWithChildren;

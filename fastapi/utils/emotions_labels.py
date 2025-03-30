@@ -1,4 +1,4 @@
-emotions = {
+emotions_dataset1 = {
     0: "admiration",
     1: "amusement",
     2: "anger",
@@ -27,4 +27,14 @@ emotions = {
     25: "sadness",
     26: "surprise",
     27: "neutral",
+}
+
+emotions_dataset2 = {
+    0: "sadness",
+    1: "joy",
+    2: "love",
+    3: "anger",
+    4: "fear",
+    5: "surprise",
+    6: "lust",
 }

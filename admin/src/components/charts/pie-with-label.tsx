@@ -1,13 +1,11 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
 import { Pie, PieChart } from "recharts"
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -17,6 +15,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { PieChartProps } from "@/types"
+
 const chartData = [
   { browser: "chrome", visitors: 40, fill: "var(--color-chrome)" },
   { browser: "safari", visitors: 60, fill: "var(--color-safari)" },
@@ -51,11 +51,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-interface PieChartProps {
-    name: string,
-    date: string,
 
-}
 
 export function PieWithLabel({
     name,

@@ -30,7 +30,7 @@ async def analyze_sentiment(request: TextRequest):
         # Loop over the models to get emotions and probabilities
         for model_name, model_func in models.items():
             emotion, probability = model_func(text)
-            sentiment = emotion_sentiment.get(emotion, "neutral")  # Default to "neutral" if emotion is not found
+            sentiment = emotion_sentiment_dataset2.get(emotion, "neutral")  # Default to "neutral" if emotion is not found
             
             # Store each model's result in the results dictionary
             results[model_name] = {
