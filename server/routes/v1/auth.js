@@ -3,6 +3,7 @@ import {
   blockUser,
   deleteUser,
   getCompleteUsersDetails,
+  getUserAnalytics,
   getUserDetails,
   unBlockUser
 } from "../../controllers/v1/adminController.js";
@@ -561,6 +562,9 @@ v1AuthRoutes.patch("/block-user/:id", verifyAccessToken, isAdmin , blockUser);
 v1AuthRoutes.patch("/unblock-user/:id", verifyAccessToken, isAdmin , unBlockUser);
 
 v1AuthRoutes.delete("/delete-user/:id", verifyAccessToken, isAdmin , deleteUser);
+
+v1AuthRoutes.get("/get-user-analytics/:id", getUserAnalytics);
+
 
 
 export default v1AuthRoutes;

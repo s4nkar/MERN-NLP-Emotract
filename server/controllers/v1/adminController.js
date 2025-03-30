@@ -102,3 +102,14 @@ export const deleteUser = async (req, res, next) => {
     next(ex);
   }
 };
+
+// get user analytics
+export const getUserAnalytics = (req, res) => {
+    const userId = req.params.id;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    return res.status(200).json("User alalytics created")
+}
