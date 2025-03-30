@@ -6,6 +6,7 @@ import { useRouter } from '@/routes/hooks';
 import { ChevronLeftIcon } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useGetSingleUser } from './queries/queries';
+import { PieWithLabel } from '@/components/charts/pie-with-label';
 
 export default function StudentDetailPage() {
   const { id } = useParams() ?? "";
@@ -66,59 +67,13 @@ export default function StudentDetailPage() {
         {/* contact information  */}
         <Card className=" col-span-1 bg-secondary shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] drop-shadow-sm lg:col-span-3">
           <CardHeader className="text-xl font-bold">
-            Contact Information
+            Sentiment Information
           </CardHeader>
 
           <CardContent>
-            <div className="grid grid-cols-2 gap-y-4">
-              <div>
-                <p className="font-bold text-black">First Name</p>
-                <p className="text-muted-foreground">John</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">Last Name</p>
-                <p className="text-muted-foreground">Doe</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">User Name</p>
-                <p className="text-muted-foreground">John</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">Sex</p>
-                <p className="text-muted-foreground">Male</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">Position</p>
-                <p className="text-muted-foreground">Super Admin</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">Department</p>
-                <p className="text-muted-foreground">Kutubi</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">Contact Email</p>
-                <p className="text-muted-foreground">ElonMusk@x.com</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">Contact Number</p>
-                <p className="text-muted-foreground">Nil</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">City</p>
-                <p className="text-muted-foreground">Dubai</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">Language</p>
-                <p className="text-muted-foreground">English</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">Date of Birth</p>
-                <p className="text-muted-foreground">26/4/1989</p>
-              </div>
-              <div>
-                <p className="font-bold text-black">Social Media</p>
-                <p className="text-muted-foreground">x</p>
-              </div>
+            <div className="grid grid-cols-2 gap-h-4">
+              <PieWithLabel name='Emotion classification with ML Model' date='Start to Now'/>
+              <PieWithLabel name='Emotion classification with DL Model' date='Start to Now'/>
             </div>
           </CardContent>
         </Card>
