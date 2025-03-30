@@ -56,7 +56,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem
             className='cursor-pointer'
-            onClick={() => router.push(`/analytics/${data._id}`)}
+            onClick={() => router.push(`/user/details/${data._id}`)}
           >
             <BarChart2 className="mr-2 h-4 w-4" /> Analytics
           </DropdownMenuItem>

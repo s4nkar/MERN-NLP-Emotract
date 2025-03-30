@@ -8,9 +8,27 @@ export const getCompleteUsersDetails = async (req, res, next) => {
       "email username avatarImage _id age firstname lastname phone imageUrl age_verified is_flagged flag_count last_active parent_email"
     );
 
+    if (!users) return res.status(500).json({ message: "User not found" });
+
     const limit = parseInt(req.query.limit) || users.length;
 
-    return res.json(users.slice(0, limit));
+    return res.json(users.slice(0, limit)).status(200);
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+// get single user details  
+export const getUserDetails = async (req, res, next) => {
+  try {
+    const user = await Users.find({ is_active: true, role: "USER", _id: req.params.id })
+    .select(
+      "email username avatarImage _id age firstname lastname phone imageUrl age_verified is_flagged flag_count last_active parent_email is_online"
+    );
+
+    if (!user) return res.status(500).json({ message: "User not found" });
+
+    return res.json(user[0]).status(200);
   } catch (ex) {
     next(ex);
   }

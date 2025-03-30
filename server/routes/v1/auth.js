@@ -3,6 +3,7 @@ import {
   blockUser,
   deleteUser,
   getCompleteUsersDetails,
+  getUserDetails,
   unBlockUser
 } from "../../controllers/v1/adminController.js";
 import { 
@@ -552,6 +553,8 @@ v1AuthRoutes.post("/logout", logOut);
 
 // ADMIN ROUTES
 v1AuthRoutes.get("/complete-users/", verifyAccessToken, isAdmin , getCompleteUsersDetails);
+
+v1AuthRoutes.get("/get-user-details/:id", verifyAccessToken, isAdmin , getUserDetails);
 
 v1AuthRoutes.patch("/block-user/:id", verifyAccessToken, isAdmin , blockUser);
 

@@ -40,7 +40,7 @@ export default function AppRouter() {
           element: <StudentPage />
         },
         {
-          path: 'student/details',
+          path: 'user/details/:id',
           element: <StudentDetailPage />
         },
         {
