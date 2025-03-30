@@ -249,26 +249,31 @@ export const refreshToken = async (req, res) => {
     }
 
     // Verify Refresh Token
-    jwt.verify(refreshToken, "REFRESH_SECRET", async (err, decoded) => {
+    jwt.verify(refreshToken, process.env.JWT_SECRET, async (err, decoded) => {
       if (err) {
         return res.status(403).json({ message: "Invalid Refresh Token" });
       }
 
-      // Check if the token is in Redis
-      client.get(decoded.userId, async (err, storedToken) => {
-        if (err) {
-          return res.status(500).json({ message: "Error accessing Redis" });
-        }
+      if (!client.isOpen) {
+        await client.connect();
+      }
+
+      try {
+        const storedToken = await client.get(decoded.userId.toString())
+
         if (!storedToken || storedToken !== refreshToken) {
           return res.status(403).json({ message: "Token invalid or expired" });
         }
 
         // Generate a new Access Token
-        const newAccessToken = jwt.sign({ userId: decoded.userId }, "ACCESS_SECRET", { expiresIn: "15m" });
+        const newAccessToken = jwt.sign({ userId: decoded.userId, role: decoded.role, }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
         // Optionally, you can also return a new refresh token here if needed
         res.json({ accessToken: newAccessToken });
-      });
+
+      } catch (err) {
+        return res.status(500).json({ message: "Error accessing Redis" });
+      }
     });
   } catch (err) {
     console.error(err); // Log the error for debugging

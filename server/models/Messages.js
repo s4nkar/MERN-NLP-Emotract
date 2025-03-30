@@ -27,11 +27,12 @@ const MessageSchema = mongoose.Schema(
     processing_status: {
       type: String,
       default: 'processing',
+      enum: ["processing", "processed"]
     },
     message_status: {
       type: String,
-      default: 'sent',
-      enum: ["sent", "delivered", "seen"]
+      default: 'pending',
+      enum: ["pending", "sent", "delivered", "seen"]
     },
     is_flagged: {
       type: Boolean,
