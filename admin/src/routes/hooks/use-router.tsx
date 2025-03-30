@@ -8,7 +8,7 @@ export function useRouter() {
 
   const router = useMemo(
     () => ({
-      back: () => navigate(-1),
+      back: () => window.history.go(-1),
       forward: () => navigate(1),
       reload: () => window.location.reload(),
       push: (href: string) => navigate(href),

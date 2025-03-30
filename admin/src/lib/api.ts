@@ -1,4 +1,4 @@
-import { blockUserRoute, deleteUserRoute, unBlockUserRoute, usersRoute } from '@/constants/api';
+import { blockUserRoute, deleteUserRoute, unBlockUserRoute, usersRoute, singleUserRoute } from '@/constants/api';
 import axiosInstance from '@/utils/axiosInstance';
 import axios from 'axios';
 // ---------------------------- Student API ------------------------------------------------- //
@@ -17,6 +17,19 @@ export async function getUsers(
 ) {
   try {
     const url = limit ? `${usersRoute}?limit=${limit}` : usersRoute;
+    const res = await axiosInstance.get(url);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
+export async function getSingleUser(
+  id: string
+) {
+  try {
+    const url = `${singleUserRoute}/${id}`;
     const res = await axiosInstance.get(url);
     return res.data;
   } catch (error) {
