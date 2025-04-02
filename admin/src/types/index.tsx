@@ -41,6 +41,8 @@ export interface PieChartProps {
   };
 }
 
+export type ModelTypeProps = "warn" | "block" | "unblock";
+
 export type MainNavItem = NavItemWithOptionalChildren;
 
 export type SidebarNavItem = NavItemWithChildren;
