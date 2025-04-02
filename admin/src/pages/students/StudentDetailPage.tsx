@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter } from "@/routes/hooks";
 import { ChevronLeftIcon, MailWarning, ShieldAlert, UserRoundCheck } from "lucide-react";
 import { useParams } from "react-router-dom";
-import { useGetUserAnalytics } from "./queries/queries";
+import { useGetUserAnalytics, useUnblockUser } from "./queries/queries";
 import { PieWithLabel } from "@/components/charts/pie-with-label";
 import { convertToMonthDayCurrentFormat } from "@/utils/date";
 import { AlertModal } from "@/components/shared/alert-modal";
@@ -25,6 +25,7 @@ export default function StudentDetailPage() {
   const router = useRouter();
 
   const { data: userData, isLoading } = useGetUserAnalytics(id || "");
+  const unblockUser = useUnblockUser();
 
   const basicDetails = ["age", "email", "parent_email", "username", "phone"];
 
@@ -33,7 +34,6 @@ export default function StudentDetailPage() {
       console.log("No model type provided");
       return;
     }
-    console.log(modelType);
     switch (modelType) {
       case "warn":
         console.log("Sending warning mail...");
@@ -42,7 +42,7 @@ export default function StudentDetailPage() {
         console.log("Blocking the action...");
         break;
       case "unblock":
-        console.log("Unblocking the action...");
+        unblockUser.mutate(id || "");
         break;
       default:
         console.log("Unknown model type");

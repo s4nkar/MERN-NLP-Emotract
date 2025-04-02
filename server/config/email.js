@@ -1,32 +1,35 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || "smtp.gmail.com",
-    port: process.env.EMAIL_PORT || 587, // Change to 465 if using `secure: true`
-    secure: false, // false for 587 (STARTTLS), true for 465 (SSL)
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    tls: {
-      rejectUnauthorized: false, // Allow self-signed certificates
-    },
-  });
-
-export const sendResetEmail = async (email, token) => {
-  try {
-    await transporter.sendMail({
-      from: `"Emotract V1" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Password Reset Request",
-      html: `<p>Click <a href="${process.env.FRONTEND_URL}/reset-password/${token}">here</a> to reset your password.</p>`,
-    });
-
-    console.log("Password reset email sent successfully!");
-  } catch (error) {
-    console.error("Error sending email:", error);
-    throw new Error("Email not sent");
+// Validate environment variables
+const requiredEnvVars = ["EMAIL_USER", "EMAIL_PASS"];
+requiredEnvVars.forEach((varName) => {
+  if (!process.env[varName]) {
+    throw new Error(`Environment variable ${varName} is missing`);
   }
-};
+});
+
+// Transporter setup
+export const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST || "smtp.gmail.com",
+  port: parseInt(process.env.EMAIL_PORT || "587", 10),
+  secure: (process.env.EMAIL_PORT || "587") === "465",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
+
+// Verify transporter
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("Email transporter verification failed:", error);
+  } else {
+    console.log("Email transporter is ready to send messages");
+  }
+});

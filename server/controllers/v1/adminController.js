@@ -3,7 +3,8 @@ import Users from "../../models/Users.js";
 import Chats from '../../models/Chats.js';
 import Messages from '../../models/Messages.js';
 import MessageMetadata from '../../models/MessageMetadata.js';
-import { emotionColors } from '../../utils/constands.js';
+import { emotionColors } from '../../constants/index.js';
+import { sendParentEmail, warnUsersendEmail } from '../../utils/sendEmail.js';
 
 
 // get all users  
@@ -317,6 +318,44 @@ export const getUserAnalytics = async (req, res) => {
     return res.status(200).json(analytics);
   } catch (error) {
     console.error('Error fetching user analytics:', error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// notify user or guardian 
+// Example usage
+// block user from frontend
+// type: INFORM_PARENT | WARN_CHILD
+export const informUserOrGuardian = async (req, res) => {
+  const { type, email, child_name, parent_email, id } = req.body;
+
+  try {
+    // Validate required fields
+    if (!type || (!email && !parent_email) || !id) {
+      return res.status(400).json({ message: "Missing required fields: type, email/parent_email, and id" });
+    }
+
+    if (type === "INFORM_PARENT") {
+       // Block user and Send inform parent
+      const updatedUser = await Users.findByIdAndUpdate(
+        id,
+        { is_flagged: true },
+        { new: true }
+      );
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      await sendParentEmail(parent_email, "NOTIFY_PARENT_BLOCK", { childName: child_name });
+    } else if (type === "WARN_CHILD") {
+      // Send warning email to the user (child)
+      await warnUsersendEmail(email, "USER_WARN_BLOCK", { childName: child_name });
+    } else {
+      return res.status(400).json({ message: "Invalid type specified" });
+    }
+
+    return res.status(200).json({ message: "Email sent successfully" });
+  } catch (error) {
+    console.error("Server Error:", error);
     return res.status(500).json({ message: "Server error" });
   }
 };

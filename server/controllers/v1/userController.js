@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from 'jsonwebtoken';
-import { sendResetEmail } from "../../config/email.js";
+import { sendResetEmail } from "../../utils/sendEmail.js";
 import Users from "../../models/Users.js";
 import PasswordReset from "../../models/PasswordReset.js";
 import { client } from "../../index.js";

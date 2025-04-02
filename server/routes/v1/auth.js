@@ -5,6 +5,7 @@ import {
   getCompleteUsersDetails,
   getUserAnalytics,
   getUserDetails,
+  informUserOrGuardian,
   unBlockUser
 } from "../../controllers/v1/adminController.js";
 import { 
@@ -553,17 +554,19 @@ v1AuthRoutes.get("/online-status/:id", getUserOnlineStatus);
 v1AuthRoutes.post("/logout", logOut);
 
 // ADMIN ROUTES
-v1AuthRoutes.get("/complete-users/", verifyAccessToken, isAdmin , getCompleteUsersDetails);
+v1AuthRoutes.get("/complete-users/", verifyAccessToken, isAdmin, getCompleteUsersDetails);
 
-v1AuthRoutes.get("/get-user-details/:id", verifyAccessToken, isAdmin , getUserDetails);
+v1AuthRoutes.get("/get-user-details/:id", verifyAccessToken, isAdmin, getUserDetails);
 
-v1AuthRoutes.patch("/block-user/:id", verifyAccessToken, isAdmin , blockUser);
+v1AuthRoutes.patch("/block-user/:id", verifyAccessToken, isAdmin, blockUser);
 
-v1AuthRoutes.patch("/unblock-user/:id", verifyAccessToken, isAdmin , unBlockUser);
+v1AuthRoutes.patch("/unblock-user/:id", verifyAccessToken, isAdmin, unBlockUser);
 
-v1AuthRoutes.delete("/delete-user/:id", verifyAccessToken, isAdmin , deleteUser);
+v1AuthRoutes.delete("/delete-user/:id", verifyAccessToken, isAdmin, deleteUser);
 
-v1AuthRoutes.get("/get-user-analytics/:id", getUserAnalytics);
+v1AuthRoutes.get("/get-user-analytics/:id", verifyAccessToken, isAdmin, getUserAnalytics);
+
+v1AuthRoutes.post("/restrict-user", informUserOrGuardian);
 
 
 
