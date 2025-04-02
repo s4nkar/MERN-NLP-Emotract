@@ -1,5 +1,5 @@
 from transformers import RobertaTokenizer, RobertaForSequenceClassification, BertForSequenceClassification, BertTokenizer
-from utils.emotions_labels import emotions
+from utils.emotions_labels import emotions_dataset2
 import torch
 import joblib
 import os
@@ -40,7 +40,7 @@ def bert_model(text) -> str:
     probabilities = F.softmax(logits, dim=-1)  # Convert logits to probabilities
     predicted_probability = probabilities[0][label].item()  # Get the probability of the predicted label
 
-    return emotions[label], predicted_probability
+    return emotions_dataset2[label], predicted_probability
 
 def roberta_model(text) -> str:
     roberta_model = RobertaForSequenceClassification.from_pretrained(os.path.join(current_dir, 'roberta/model'))
@@ -72,7 +72,7 @@ def roberta_model(text) -> str:
     probabilities = F.softmax(logits, dim=-1)  # Convert logits to probabilities
     predicted_probability = probabilities[0][label].item()  # Get the probability of the predicted label
 
-    return emotions[label], predicted_probability
+    return emotions_dataset2[label], predicted_probability
 
 def lr_model(text) -> str:
     lr_model = joblib.load(os.path.join(current_dir, 'lr/lr_model.pkl'))  # Load the Logistic Regression model
@@ -90,9 +90,9 @@ def lr_model(text) -> str:
 
     # Print the predictions and probabilities
     print("Logistic Regression Predictions:")
-    print(f"Text: {text}\nPredicted Emotion: {emotions[predicted_label]}\nProbability: {predicted_probability:.4f}\n")
+    print(f"Text: {text}\nPredicted Emotion: {emotions_dataset2[predicted_label]}\nProbability: {predicted_probability:.4f}\n")
 
-    return emotions[predicted_label], predicted_probability
+    return emotions_dataset2[predicted_label], predicted_probability
 
 def rf_model(text) -> str:
     rf_model = joblib.load(os.path.join(current_dir, 'rf/rf_model.pkl'))  # Load the Random Forest model
@@ -111,9 +111,9 @@ def rf_model(text) -> str:
 
     # Print the predictions and probabilities
     print("Random Forest Predictions:")
-    print(f"Text: {text}\nPredicted Emotion: {emotions[predicted_label]}\nProbability: {predicted_probability:.4f}\n")
+    print(f"Text: {text}\nPredicted Emotion: {emotions_dataset2[predicted_label]}\nProbability: {predicted_probability:.4f}\n")
 
-    return emotions[predicted_label], predicted_probability
+    return emotions_dataset2[predicted_label], predicted_probability
 
 
 # text = "test message"

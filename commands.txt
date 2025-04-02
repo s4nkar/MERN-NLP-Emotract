@@ -29,3 +29,8 @@ docker-compose down
 
 (optional)
 pip install -r requirements.txt
+
+kill fastapi server
+    tasklist | findstr python
+    taskkill /PID <PID> /F
+    Replace <PID> with the process ID (e.g., taskkill /PID 12345 /F)

@@ -1,4 +1,4 @@
-from utils.emotions_labels import emotions
+from utils.emotions_labels import emotions_dataset2
 from transformers import RobertaTokenizer, RobertaForSequenceClassification, BertForSequenceClassification, BertTokenizer
 import torch
 import joblib
@@ -28,7 +28,7 @@ def bert_model(text) -> str:
     # Get the predicted label (highest logit value)
     prediction = outputs.logits.argmax(dim=-1)
     label = prediction.item()
-    return emotions[label]
+    return emotions_dataset2[label]
 
 def roberta_model(text) -> str:
     roberta_model = RobertaForSequenceClassification.from_pretrained('roberta/model')
@@ -54,7 +54,7 @@ def roberta_model(text) -> str:
     # Get the predicted label (highest logit value)
     prediction = outputs.logits.argmax(dim=-1)
     label = prediction.item()
-    return emotions[label]
+    return emotions_dataset2[label]
 
 def lr_model(text) -> str:
     lr_model = joblib.load('lr/lr_model.pkl')  # Load the Logistic Regression model
@@ -74,7 +74,7 @@ def lr_model(text) -> str:
         label = pred
         print(f"Text: {text}\nPredicted Emotion: {pred}\nProbabilities: {prob}\n")
 
-    return emotions[label]
+    return emotions_dataset2[label]
 
 def rf_model(text) -> str:
     rf_model = joblib.load('rf/rf_model.pkl')  # Load the Random Forest model
@@ -94,7 +94,7 @@ def rf_model(text) -> str:
         label = pred
         print(f"Text: {text}\nPredicted Emotion: {pred}\nProbabilities: {prob}\n")
 
-    return emotions[label]
+    return emotions_dataset2[label]
 
 # text = "test message"
 # b = bert_model(text)

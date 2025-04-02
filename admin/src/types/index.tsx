@@ -27,6 +27,22 @@ export interface FooterItem {
   }[];
 }
 
+export interface PieChartProps {
+  name: string;
+  date: string;
+  data: {
+    emotion: string;
+    percentage: number;
+    color: string;
+  }[]; 
+  messages: {
+    total: number;
+    flagged: number;
+  };
+}
+
+export type ModelTypeProps = "warn" | "block" | "unblock";
+
 export type MainNavItem = NavItemWithOptionalChildren;
 
 export type SidebarNavItem = NavItemWithChildren;

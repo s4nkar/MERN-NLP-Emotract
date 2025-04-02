@@ -1,66 +1,47 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Pie, PieChart } from "recharts"
-
+import { Cell, Pie, PieChart } from "recharts";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-const chartData = [
-  { browser: "chrome", visitors: 40, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 60, fill: "var(--color-safari)" },
-//   { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-//   { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-//   { browser: "other", visitors: 90, fill: "var(--color-other)" },
-]
+} from "@/components/ui/chart";
+import { PieChartProps } from "@/types";
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig
+// Dynamic chart config based on data
+const generateChartConfig = (data: PieChartProps["data"]): ChartConfig => {
+  const config: ChartConfig = {
+    percentage: {
+      label: "Percentage",
+    },
+  };
+  data.forEach((item) => {
+    config[item.emotion] = {
+      label: item.emotion.charAt(0).toUpperCase() + item.emotion.slice(1), // Capitalize emotion
+      color: item.color,
+    };
+  });
+  return config;
+};
 
-interface PieChartProps {
-    name: string,
-    date: string,
+// Custom label renderer to show emotion
+const renderCustomLabel = ({ name }: { name: string }) => {
+  return name; // Displays the emotion (from nameKey="emotion")
+};
 
-}
+export function PieWithLabel({ name, date, data, messages }: PieChartProps) {
+  const chartConfig = generateChartConfig(data);
 
-export function PieWithLabel({
-    name,
-    date
-}: PieChartProps) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
@@ -73,11 +54,33 @@ export function PieWithLabel({
           className="mx-auto aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
         >
           <PieChart>
-            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-            <Pie data={chartData} dataKey="visitors" label nameKey="browser" />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  hideLabel // Hide the default label (emotion)
+                  formatter={(value) => `${value}%`} // Show percentage in tooltip
+                />
+              }
+            />
+            <Pie
+              data={data}
+              dataKey="percentage" // Value used for slice size
+              nameKey="emotion"   // Name used for label and tooltip
+              label={renderCustomLabel} // Show emotion outside
+              labelLine={true}    // Optional: line connecting label to slice
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+
+            <ChartLegend
+              content={<ChartLegendContent nameKey="emotion" />}
+              className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+            />
           </PieChart>
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }
