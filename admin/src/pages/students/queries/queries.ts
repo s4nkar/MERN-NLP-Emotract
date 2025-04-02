@@ -1,5 +1,6 @@
 import { 
   getSingleUser,
+  getUserAnalytics,
   getUsers, 
   handleBlockUser, 
   handleDeleteUser, 
@@ -22,6 +23,13 @@ export const useGetSingleUser = (id: string) => {
   return useQuery({
     queryKey: ['users', id],
     queryFn: async () => getSingleUser(id)
+  });
+};
+
+export const useGetUserAnalytics = (id: string) => {
+  return useQuery({
+    queryKey: ['userAnalytics', id],
+    queryFn: async () => getUserAnalytics(id)
   });
 };
 

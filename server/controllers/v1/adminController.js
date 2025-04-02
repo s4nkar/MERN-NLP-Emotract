@@ -121,7 +121,7 @@ export const getUserAnalytics = async (req, res) => {
   try {
     // Check if user exists and fetch basic info
     const user = await Users.findById(userId).select(
-      'username email last_active created_at flag_count is_flagged role firstname lastname email parent_email'
+      'username email last_active created_at flag_count is_flagged role firstname lastname email parent_email is_online avatarImage'
     );
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -289,12 +289,17 @@ export const getUserAnalytics = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        parent_email: user.parent_email,
+        is_online: user.is_online,
+        avatarImage: user.avatarImage,
         email: user.email,
         role: user.role,
         lastActive: user.last_active,
         createdAt: user.created_at,
         flagCount: user.flag_count,
-        isFlagged: user.is_flagged,
+        is_flagged: user.is_flagged,
       },
       chats: {
         total: chatCount,

@@ -5,13 +5,14 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useRouter } from '@/routes/hooks';
 import { ChevronLeftIcon } from 'lucide-react';
 import { useParams } from 'react-router-dom';
-import { useGetSingleUser } from './queries/queries';
+import { useGetUserAnalytics } from './queries/queries';
 import { PieWithLabel } from '@/components/charts/pie-with-label';
+import { convertToMonthDayCurrentFormat } from '@/utils/date';
 
 export default function StudentDetailPage() {
   const { id } = useParams() ?? "";
   const router = useRouter();
-  const { data: user, isLoading } = useGetSingleUser(id || "");
+  const { data: userData, isLoading } = useGetUserAnalytics(id || "");
   const basicDetails = ["age", "email", "parent_email", "username", "phone"]
   
   if (isLoading) {
@@ -20,7 +21,7 @@ export default function StudentDetailPage() {
   return (
     <div className="p-10">
       <div className="flex items-center justify-between">
-        <Heading title={'User Analytics'} />
+        <Heading title={'User Analytics'} messageCount={userData?.messages.total} flaggedCount={userData?.messages.flagged} />
         <div className="flex justify-end gap-3">
           {/* <Button>
             <ShareIcon className="h-4 w-4" />
@@ -37,9 +38,9 @@ export default function StudentDetailPage() {
           <Card className="bg-secondary  shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] drop-shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between font-bold">
               <div className='truncate'>
-                <p className="text-xl">{user?.username}</p> 
+                <p className="text-xl">{userData.user?.username}</p> 
               </div>
-              {user?.is_online ? (
+              {userData.user?.is_online ? (
                 <Badge className="bg-green-600">Active</Badge>
               ):(
                 <Badge className="bg-red-600">InActive</Badge>
@@ -47,7 +48,7 @@ export default function StudentDetailPage() {
             </CardHeader>
             <CardContent className="flex items-center justify-center">
               <img
-                src={user?.avatarImage}
+                src={userData.user?.avatarImage}
                 className="rounded-l-[40%] rounded-r-[40%] "
               />
             </CardContent>
@@ -59,12 +60,12 @@ export default function StudentDetailPage() {
             <CardContent className="text-sm text-[12px]">
                 <span className='flex gap-2'>
                   <p className='font-semibold text-gray-400 capitalize'>Name: </p> 
-                  <p >{user?.firstname}{user?.lastname}</p>
+                  <p >{userData.user?.firstname}{userData.user?.lastname}</p>
                 </span>
               {basicDetails.map((detail, i) => (
                 <span key={i} className='flex gap-2'>
                   <p className='font-semibold text-gray-400 capitalize'>{detail}: </p> 
-                  <p >{user[detail]}</p>
+                  <p >{userData.user[detail]}</p>
                 </span>
               ))}
             </CardContent>
@@ -72,14 +73,20 @@ export default function StudentDetailPage() {
         </div>
         {/* contact information  */}
         <Card className=" col-span-1 bg-secondary shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] drop-shadow-sm lg:col-span-3">
-          <CardHeader className="text-xl font-bold">
-            Sentiment Information
-          </CardHeader>
-
-          <CardContent>
-            <div className="grid grid-cols-2 gap-h-4">
-              <PieWithLabel name='Emotion classification with ML Model' date='Start to Now'/>
-              <PieWithLabel name='Emotion classification with DL Model' date='Start to Now'/>
+          <CardContent className='mt-2'>
+            <div className="grid grid-cols-2 gap-4">
+              <PieWithLabel 
+                name='Emotion classification with ML Models' 
+                date={convertToMonthDayCurrentFormat(userData.user.createdAt)} 
+                messages={userData.messages} 
+                data={userData.mlEmotionsObj}
+                />
+              <PieWithLabel 
+                name='Emotion classification with DL Models' 
+                date={convertToMonthDayCurrentFormat(userData.user.createdAt)} 
+                messages={userData.messages} 
+                data={userData.dlEmotionsObj}
+                />
             </div>
           </CardContent>
         </Card>
