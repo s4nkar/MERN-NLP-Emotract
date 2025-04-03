@@ -335,7 +335,7 @@ export const informUserOrGuardian = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields: type, email/parent_email, and id" });
     }
 
-    if (type === "INFORM_PARENT") {
+    if (type === "INFORM_PARENT_AND_BLOCK") {
        // Block user and Send inform parent
       const updatedUser = await Users.findByIdAndUpdate(
         id,

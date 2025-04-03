@@ -41,6 +41,14 @@ export interface PieChartProps {
   };
 }
 
+export interface RestrictUserProps {
+  type: "WARN_CHILD" | "INFORM_PARENT_AND_BLOCK";
+  email: string;
+  child_name: string;
+  parent_email?: string;
+  id: string; 
+}
+
 export type ModelTypeProps = "warn" | "block" | "unblock";
 
 export type MainNavItem = NavItemWithOptionalChildren;

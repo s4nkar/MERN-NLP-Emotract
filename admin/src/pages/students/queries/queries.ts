@@ -4,8 +4,10 @@ import {
   getUsers, 
   handleBlockUser, 
   handleDeleteUser, 
-  handleUnBlockUser 
+  handleUnBlockUser, 
+  restrictUser
 } from '@/lib/api';
+import { RestrictUserProps } from '@/types';
 import { 
   useMutation, 
   useQueryClient, 
@@ -33,6 +35,17 @@ export const useGetUserAnalytics = (id: string) => {
   });
 };
 
+export const useRestrictUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (args: RestrictUserProps) => restrictUser(args),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userAnalytics'] });
+    }
+  });
+};
+
 export const useBlockUser = () => {
   const queryClient = useQueryClient();
 
@@ -44,13 +57,14 @@ export const useBlockUser = () => {
   });
 };
 
-export const useUnblockUser = () => {
+export const useUnblockUser = (useType: "Analytics" | "Users") => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (id: string) => handleUnBlockUser(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] }); // Refresh users list
+      const queryKey = useType === "Analytics" ? ["userAnalytics"] : ["users"];
+      queryClient.invalidateQueries({ queryKey });
     }
   });
 };
