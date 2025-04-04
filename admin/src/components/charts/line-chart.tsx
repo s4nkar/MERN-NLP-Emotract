@@ -25,10 +25,6 @@ export interface MessageTrendLineChartProps {
     total: number;
     flagged: number;
   }[];
-  messages: {
-    total: number;
-    flagged: number;
-  };
 }
 
 const chartConfig = {
