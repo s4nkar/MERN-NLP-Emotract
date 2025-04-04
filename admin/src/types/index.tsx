@@ -35,10 +35,6 @@ export interface PieChartProps {
     percentage: number;
     color: string;
   }[]; 
-  messages: {
-    total: number;
-    flagged: number;
-  };
 }
 
 export interface RestrictUserProps {

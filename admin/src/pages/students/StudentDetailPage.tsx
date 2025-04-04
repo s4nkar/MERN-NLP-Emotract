@@ -12,7 +12,8 @@ import { AlertModal } from "@/components/shared/alert-modal";
 import { useState } from "react";
 import { ModelTypeProps, RestrictUserProps } from "@/types";
 import { ToastContainer, toast } from 'react-toastify';
-  
+import { MessageTrendLineChart } from "@/components/charts/line-chart";
+
 
 export default function StudentDetailPage() {
   const [open, setOpen] = useState(false);
@@ -158,7 +159,7 @@ export default function StudentDetailPage() {
       </div>
       <div className="grid grid-cols-1 gap-6 py-6 lg:grid-cols-4">
         <div className="col-span-1 flex flex-col gap-6 lg:col-span-1">
-          <Card className="bg-secondary shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] drop-shadow-sm">
+          <Card className="bg-secondary h-full shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] drop-shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between font-bold">
               <div className="truncate">
                 <p className="text-xl">{userData.user?.username}</p>
@@ -195,22 +196,33 @@ export default function StudentDetailPage() {
             </CardContent>
           </Card>
         </div>
-        <Card className="col-span-1 bg-secondary shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] drop-shadow-sm lg:col-span-3">
+        <Card className="col-span-1 bg-secondary custom-scroll overflow-y-scroll h-[81dvh] shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] drop-shadow-sm lg:col-span-3">
           <CardContent className="mt-2">
-            <div className="grid grid-cols-2 gap-4">
+            {userData?.messages.total > 0 ? (
+            <div>
+              <div className="grid grid-cols-2 gap-4">
               <PieWithLabel
                 name="Emotion classification with ML Models"
                 date={convertToMonthDayCurrentFormat(userData.user.createdAt)}
-                messages={userData.messages}
                 data={userData.mlEmotionsObj}
               />
               <PieWithLabel
                 name="Emotion classification with DL Models"
                 date={convertToMonthDayCurrentFormat(userData.user.createdAt)}
-                messages={userData.messages}
                 data={userData.dlEmotionsObj}
               />
             </div>
+              <div className="mt-2">
+              <MessageTrendLineChart 
+              name="Message Activity"
+              date={convertToMonthDayCurrentFormat(userData.user.createdAt)}
+              data={userData.messageTrend}
+            />
+              </div>
+            </div>
+              ):(
+                <div className="text-center mt-5">No Chats found!</div>
+              )}
           </CardContent>
         </Card>
       </div>

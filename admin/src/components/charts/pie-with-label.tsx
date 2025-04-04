@@ -39,7 +39,7 @@ const renderCustomLabel = ({ name }: { name: string }) => {
   return name; // Displays the emotion (from nameKey="emotion")
 };
 
-export function PieWithLabel({ name, date, data, messages }: PieChartProps) {
+export function PieWithLabel({ name, date, data }: PieChartProps) {
   const chartConfig = generateChartConfig(data);
 
   return (
