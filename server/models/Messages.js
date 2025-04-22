@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { encrypt, safeDecrypt } from "../config/crypto.js";
 
 const MessageSchema = mongoose.Schema(
   {
@@ -53,5 +54,18 @@ const MessageSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Pre-save hook to encrypt text
+MessageSchema.pre("save", function (next) {
+  if (this.isModified("text") && !this.text.includes(":")) {
+    this.text = encrypt(this.text);
+  }
+  next();
+});
+
+// Method to decrypt text on retrieval
+MessageSchema.methods.getDecryptedText = function () {
+  return safeDecrypt(this.text);
+};
 
 export default mongoose.model("Messages", MessageSchema);
