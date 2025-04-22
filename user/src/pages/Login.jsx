@@ -49,7 +49,7 @@ export default function Login() {
       
       const response = await axiosInstance.post(loginRoute, { username, password });
       const { data } = response; // Extract data from response
-  
+
       if (!data.status) {
         return toast.error(data.message, toastOptions);
       }

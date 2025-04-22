@@ -1,3 +1,4 @@
+import { safeDecrypt } from "../../config/crypto.js";
 import Chats from "../../models/Chats.js";
 import Messages from "../../models/Messages.js"
 
@@ -25,7 +26,7 @@ export const getMessages = async (req, res, next) => {
     // Construct response
     const projectedMessages = messages.map(({ text, sender_id }) => ({
       fromSelf: sender_id.toString() === from, // Compare with logged-in user
-      message: text,
+      message: safeDecrypt(text),
     }));
 
     return res.status(200).json(projectedMessages);

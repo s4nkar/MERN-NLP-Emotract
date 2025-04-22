@@ -29,9 +29,11 @@ export default function ForgotPassword() {
             toast.error("Email is Required!", toastOptions);
             return;
         }
-        const { data } = await axiosInstance.post(forgotPasswordRoute, {
+        const response = await axiosInstance.post(forgotPasswordRoute, {
             email
         });
+
+        const { data } = response;
         if (data.status === false) {
             toast.error(data.message, toastOptions);
         }

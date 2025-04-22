@@ -17,12 +17,12 @@ export const login = async (req, res, next) => {
     const user = await Users.findOne({ username, role });
 
     if (!user) 
-      return res.status(401).json({ message: "Incorrect Username", status: false });
+      return res.status(500).json({ message: "Incorrect Username", status: false });
 
     // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) 
-      return res.status(401).json({ message: "Incorrect Username or Password", status: false });
+      return res.status(500).json({ message: "Incorrect Username or Password", status: false });
 
     // Generate Tokens
     const accessToken = jwt.sign({ userId: user._id, role: user.role, }, process.env.JWT_SECRET, { expiresIn: "15m" });

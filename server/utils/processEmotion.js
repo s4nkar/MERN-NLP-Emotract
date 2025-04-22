@@ -32,9 +32,9 @@ const processEmotion = async (messageId, text) => {
         }
 
         // If the sentiment is negative and the probability is high, we mark the message as flagged
-        if (sentiment === "negative" && probability > NEGATIVE_PROB_THRESHOLD) {
-            is_flagged = true;  // Set the message as flagged (likely to be inappropriate or needs review)
-        }
+        // if (sentiment === "negative" && probability > NEGATIVE_PROB_THRESHOLD) {
+        //     is_flagged = true;  // Set the message as flagged (likely to be inappropriate or needs review)
+        // }
 
         // If the emotion is something sensitive like "lust" and has a high probability, flag the message
         if (SENSITIVE_EMOTIONS.includes(emotion) && probability > 0.75) {

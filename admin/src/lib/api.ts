@@ -1,4 +1,5 @@
-import { blockUserRoute, deleteUserRoute, unBlockUserRoute, usersRoute, singleUserRoute, userAnalyticsRoute } from '@/constants/api';
+import { blockUserRoute, deleteUserRoute, unBlockUserRoute, usersRoute, singleUserRoute, userAnalyticsRoute, restrictUserRoute } from '@/constants/api';
+import { RestrictUserProps } from '@/types';
 import axiosInstance from '@/utils/axiosInstance';
 import axios from 'axios';
 // ---------------------------- Student API ------------------------------------------------- //
@@ -48,6 +49,16 @@ export async function getUserAnalytics(
   } catch (error) {
     console.log(error);
     return error;
+  }
+}
+
+export async function restrictUser(args: RestrictUserProps) {
+  try {
+    const res = await axiosInstance.post(`${restrictUserRoute}`, args);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return error; 
   }
 }
 

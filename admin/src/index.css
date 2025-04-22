@@ -74,3 +74,24 @@
     font-family: 'Montserrat', sans-serif;
   }
 }
+
+
+.custom-scroll {
+  scrollbar-width: thin;             /* Firefox */
+  scrollbar-color: #b1cbf0 #17202c;  /* thumb and track colors */
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 8px;                        /* width of the scrollbar */
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #e2e8f0;              /* Light gray track */
+  border-radius: 9999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #94a3b8;        /* Slate gray thumb */
+  border-radius: 9999px;
+  border: 2px solid #e2e8f0;        /* Adds some padding effect */
+}

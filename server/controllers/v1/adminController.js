@@ -149,6 +149,18 @@ export const getUserAnalytics = async (req, res) => {
     const totalMessages = messageStats[0]?.totalMessages || 0;
     const flaggedMessages = messageStats[0]?.flaggedMessages || 0;
 
+    const messageTrend = await Messages.aggregate([
+      { $match: { sender_id: new mongoose.Types.ObjectId(userId), is_active: true } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$sent_at" } },
+          total: { $sum: 1 },
+          flagged: { $sum: { $cond: ['$is_flagged', 1, 0] } },
+        },
+      },
+      { $sort: { _id: 1 } }, // Sort by date ascending
+    ]);
+
     // Aggregate emotion counts from MessageMetadata for user's messages
     const emotionStats = await MessageMetadata.aggregate([
       {
@@ -313,6 +325,7 @@ export const getUserAnalytics = async (req, res) => {
       },
       mlEmotionsObj, // Combined Random Forest + Logistic Regression
       dlEmotionsObj, // Combined BERT + RoBERTa
+      messageTrend,
     };
 
     return res.status(200).json(analytics);
@@ -335,7 +348,7 @@ export const informUserOrGuardian = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields: type, email/parent_email, and id" });
     }
 
-    if (type === "INFORM_PARENT") {
+    if (type === "INFORM_PARENT_AND_BLOCK") {
        // Block user and Send inform parent
       const updatedUser = await Users.findByIdAndUpdate(
         id,
