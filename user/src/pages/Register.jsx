@@ -166,12 +166,19 @@ export default function Register() {
             name="username"
             onChange={(e) => handleChange(e)}
             />
-          
           <input
-            type="number"
-            placeholder="Mobile No"
-            name="phone"
-            onChange={(e) => handleChange(e)}
+              type="text"
+              placeholder="Mobile No"
+              name="phone"
+              maxLength={10}
+              value={values.phone}
+              onChange={(e) => {
+                const value = e.target.value;
+                // Allow only numbers and limit to 10 digits
+                if (/^\d{0,10}$/.test(value)) {
+                  handleChange(e);
+                }
+              }}
             />
           </div>
           <div className="flex gap-2">
