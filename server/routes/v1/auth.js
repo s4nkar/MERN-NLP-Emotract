@@ -5,6 +5,7 @@ import {
   getCompleteUsersDetails,
   getUserAnalytics,
   getUserDetails,
+  getUserGenderDetails,
   informUserOrGuardian,
   unBlockUser
 } from "../../controllers/v1/adminController.js";
@@ -555,6 +556,8 @@ v1AuthRoutes.post("/logout", logOut);
 
 // ADMIN ROUTES
 v1AuthRoutes.get("/complete-users/", verifyAccessToken, isAdmin, getCompleteUsersDetails);
+
+v1AuthRoutes.get("/user-gender-details/", verifyAccessToken, isAdmin, getUserGenderDetails);
 
 v1AuthRoutes.get("/get-user-details/:id", verifyAccessToken, isAdmin, getUserDetails);
 

@@ -375,3 +375,40 @@ export const informUserOrGuardian = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+
+export const getUserGenderDetails = async (req, res) => {
+  try {
+    const genderStats = await User.aggregate([
+      {
+        $match: {
+          is_active: true 
+        }
+      },
+      {
+        $group: {
+          _id: "$gender",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    // Format the output nicely (M, F, O counts)
+    const genderCounts = { M: 0, F: 0, O: 0 };
+    genderStats.forEach(g => {
+      genderCounts[g._id] = g.count;
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: genderCounts
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong!"
+    });
+  }
+};
