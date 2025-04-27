@@ -206,9 +206,9 @@ v1AuthRoutes.post("/register", register);
  *                   type: boolean
  *                   example: false
  */
-v1AuthRoutes.get("/all-users/:id", getAllUsers);
+v1AuthRoutes.get("/all-users/:id", verifyAccessToken, getAllUsers);
 
-v1AuthRoutes.get("/all-contact-users/:id", getAllContactsUsers);
+v1AuthRoutes.get("/all-contact-users/:id", verifyAccessToken, getAllContactsUsers);
 
 /**
  * @swagger
@@ -288,7 +288,7 @@ v1AuthRoutes.get("/all-contact-users/:id", getAllContactsUsers);
  *                   type: boolean
  *                   example: false
  */
-v1AuthRoutes.post("/setavatar/:id", setAvatar);
+v1AuthRoutes.post("/setavatar/:id", verifyAccessToken, setAvatar);
 
 /**
  * @swagger
@@ -362,7 +362,7 @@ v1AuthRoutes.post("/setavatar/:id", setAvatar);
  *                   type: boolean
  *                   example: false
  */
-v1AuthRoutes.post("/forgot-password", forgotPassword);
+v1AuthRoutes.post("/forgot-password", verifyAccessToken, forgotPassword);
 
 /**
  * @swagger
@@ -506,9 +506,9 @@ v1AuthRoutes.post("/reset-password/:token", resetPassword);
  *                   type: string
  *                   example: "Error accessing Redis"
  */
-v1AuthRoutes.post("/refresh-token", refreshToken);
+v1AuthRoutes.post("/refresh-token",  refreshToken);
 
-v1AuthRoutes.get("/online-status/:id", getUserOnlineStatus);
+v1AuthRoutes.get("/online-status/:id", verifyAccessToken,  getUserOnlineStatus);
 
 /**
  * @swagger
@@ -569,7 +569,7 @@ v1AuthRoutes.delete("/delete-user/:id", verifyAccessToken, isAdmin, deleteUser);
 
 v1AuthRoutes.get("/get-user-analytics/:id", verifyAccessToken, isAdmin, getUserAnalytics);
 
-v1AuthRoutes.post("/restrict-user", informUserOrGuardian);
+v1AuthRoutes.post("/restrict-user", verifyAccessToken, isAdmin, informUserOrGuardian);
 
 
 

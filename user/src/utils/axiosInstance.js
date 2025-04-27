@@ -16,14 +16,14 @@ axiosInstance.interceptors.request.use(
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
     return config;
-  },
+  }, 
   (error) => Promise.reject(error)
 );
 
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config; 
     
     // If the user is not an admin and gets a 403 response
     if (error.response?.status === 403) {

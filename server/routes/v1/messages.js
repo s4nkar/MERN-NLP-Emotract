@@ -3,6 +3,7 @@ import {
     getMessages 
 } from "../../controllers/v1/messageController.js";
 import express from "express";
+import { verifyAccessToken } from "../../middleware/authMiddleware.js";
 
 const v1MessageRoutes = express.Router();
 
@@ -63,7 +64,7 @@ const v1MessageRoutes = express.Router();
  *                   type: string
  *                   example: "Failed to add message to the database"
  */
-v1MessageRoutes.post("/addmsg/", addMessage);
+v1MessageRoutes.post("/addmsg/", verifyAccessToken, addMessage);
 
 /**
  * @swagger
@@ -125,6 +126,6 @@ v1MessageRoutes.post("/addmsg/", addMessage);
  *                   type: string
  *                   example: "Internal server error"
  */
-v1MessageRoutes.post("/getmsg/", getMessages);
+v1MessageRoutes.post("/getmsg/", verifyAccessToken, getMessages);
 
 export default v1MessageRoutes;

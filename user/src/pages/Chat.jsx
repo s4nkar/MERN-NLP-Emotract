@@ -7,6 +7,7 @@ import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
 import axiosInstance from "../utils/axiosInstance";
 import { useSocket } from "../context/SocketProvider";
+import SuspendedUserPopup from "../components/SuspendedUserPopup";
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -88,12 +89,11 @@ export default function Chat() {
     setCurrentChat(chat);
   };
 
-
-
   return (
     <>
       <Container>
         <div className="container">
+          <SuspendedUserPopup isSuspended={currentUser?.is_flagged}/>
           <Contacts contacts={contacts} changeChat={handleChatChange}  />
           {currentChat === undefined ? (
             <Welcome />
