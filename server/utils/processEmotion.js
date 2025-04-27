@@ -2,8 +2,9 @@ import Messages from "../models/Messages.js";
 import analyzeMessage from "./analyze-emotion.js";
 import MessageMetadata from "../models/MessageMetadata.js"; 
 import { safeDecrypt } from "../config/crypto.js";
+import Users from "../models/Users.js";
 
-const processEmotion = async (messageId, text) => {
+const processEmotion = async (messageId, text, userId) => {
   try {  
     // Get emotions from FastAPI 
     // Analyze the message to get emotions and sentiments from 4 different models
@@ -60,6 +61,14 @@ const processEmotion = async (messageId, text) => {
     // Save the metadata to the database
     await messageMetadata.save();
 
+    if(is_flagged) {
+      await Users.findByIdAndUpdate(
+        userId,
+        { $inc: { flag_count: 1 } },
+        { new: true } 
+      );
+    }
+
     // Update the processing status in the Messages collection
     await Messages.findByIdAndUpdate(
       messageId,  // The message ID
@@ -91,7 +100,7 @@ const handleProcessingMessages = async () => {
     // console.log({ messagesToProcess });
 
     for (const message of messagesToProcess) {
-      await processEmotion(message._id, safeDecrypt(message.text));
+      await processEmotion(message._id, safeDecrypt(message.text), message.sender_id);
     }
   } catch (error) {
     console.error("Error processing messages:", error);
