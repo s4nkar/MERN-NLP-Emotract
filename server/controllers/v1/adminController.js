@@ -375,33 +375,75 @@ export const informUserOrGuardian = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
-
 export const getUserGenderDetails = async (req, res) => {
   try {
-    const genderStats = await User.aggregate([
+    // Fetch the earliest and latest registration dates
+    const firstUser = await Users.findOne({ is_active: true }).sort({ createdAt: 1 });
+    const lastUser = await Users.findOne({ is_active: true }).sort({ createdAt: -1 });
+
+    if (!firstUser || !lastUser) {
+      return res.status(404).json({
+        success: false,
+        message: "No active users found."
+      });
+    }
+
+    // The range from the first registered user to the last registered user
+    const startDate = firstUser.createdAt;
+    const referenceDate = lastUser.createdAt;
+
+    const genderStats = await Users.aggregate([
       {
         $match: {
-          is_active: true 
+          is_active: true,
+          createdAt: { $gte: startDate, $lte: referenceDate }
         }
       },
       {
         $group: {
-          _id: "$gender",
+          _id: {
+            date: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+            gender: "$gender"
+          },
           count: { $sum: 1 }
         }
+      },
+      {
+        $group: {
+          _id: "$_id.date",
+          genders: {
+            $push: {
+              k: "$_id.gender",  // key (gender)
+              v: "$count"        // value (count)
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          genderCounts: {
+            $arrayToObject: "$genders"  // Ensure correct structure here
+          }
+        }
+      },
+      {
+        $sort: { date: 1 }
       }
     ]);
 
-    // Format the output nicely (M, F, O counts)
-    const genderCounts = { M: 0, F: 0, O: 0 };
-    genderStats.forEach(g => {
-      genderCounts[g._id] = g.count;
-    });
+    // Format the result to make sure M/F/O are always present
+    const formattedStats = genderStats.map((item) => ({
+      date: item.date,
+      M: item.genderCounts.M || 0,
+      F: item.genderCounts.F || 0,
+      O: item.genderCounts.O || 0,
+    }));
 
     return res.status(200).json({
       success: true,
-      data: genderCounts
+      data: formattedStats
     });
 
   } catch (error) {
@@ -410,5 +452,5 @@ export const getUserGenderDetails = async (req, res) => {
       success: false,
       message: "Something went wrong!"
     });
-  }
+  } 
 };

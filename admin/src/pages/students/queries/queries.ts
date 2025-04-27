@@ -1,4 +1,5 @@
 import { 
+  getGenderDetails,
   getSingleUser,
   getUserAnalytics,
   getUsers, 
@@ -13,6 +14,13 @@ import {
   useQueryClient, 
   useQuery 
 } from '@tanstack/react-query';
+
+export const useGetGenderDetails = () => {
+  return useQuery({
+    queryKey: ['genderDetails'],
+    queryFn: async () => getGenderDetails()
+  });
+};
 
 export const useGetStudents = () => {
   return useQuery({

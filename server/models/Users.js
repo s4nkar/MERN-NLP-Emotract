@@ -56,6 +56,7 @@ const usersSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
+      default: "M",
       enum: ["M", "F", "O"]
     },
     phone: {

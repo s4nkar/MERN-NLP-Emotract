@@ -2,7 +2,6 @@ import PageHead from '@/components/shared/page-head.jsx';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
@@ -12,10 +11,13 @@ import {
   TabsList,
   TabsTrigger
 } from '@/components/ui/tabs.js';
-import RecentSales from './components/recent-sales.js';
-import { AgeChart } from '@/components/charts/age-chart.js';
+import { GenderChart } from '@/components/charts/gender-chart.js';
+import { useGetGenderDetails } from '../students/queries/queries';
 
 export default function DashboardPage() {
+
+  const { data, isLoading } = useGetGenderDetails();
+
   return (
     <>
       <PageHead title="Dashboard | App" />
@@ -136,8 +138,14 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7 pb-5">
-              <Card className="col-span-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols- lg:grid-cols- pb-5">
+              {isLoading ?
+              (
+                "Loading ..."
+              ):(
+              <GenderChart data={data}/>
+              )}
+              {/* <Card className="col-span-4">
                 <AgeChart/>
               </Card>
               <Card className="col-span-4 md:col-span-3">
@@ -150,7 +158,7 @@ export default function DashboardPage() {
                 <CardContent>
                   <RecentSales />
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </TabsContent>
         </Tabs>
