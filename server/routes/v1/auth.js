@@ -20,6 +20,7 @@ import {
   refreshToken,
   getUserOnlineStatus,
   getAllContactsUsers,
+  getUserBlockStatus,
 } from "../../controllers/v1/userController.js";
 import { verifyAccessToken } from "../../middleware/authMiddleware.js";
 import { isAdmin } from "../../middleware/isAdmin.js";
@@ -509,6 +510,8 @@ v1AuthRoutes.post("/reset-password/:token", resetPassword);
 v1AuthRoutes.post("/refresh-token",  refreshToken);
 
 v1AuthRoutes.get("/online-status/:id", verifyAccessToken,  getUserOnlineStatus);
+
+v1AuthRoutes.get("/block-status/:id", verifyAccessToken,  getUserBlockStatus);
 
 /**
  * @swagger

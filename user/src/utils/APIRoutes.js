@@ -5,6 +5,7 @@ export const forgotPasswordRoute = `/auth/forgot-password`;
 export const logoutRoute = `/auth/logout`;
 export const allUsersRoute = `/auth/all-users`;
 export const allContactUsersRoute = `/auth/all-contact-users`;
+export const userBlockRoute = `/auth/block-status`;
 export const sendMessageRoute = `/messages/addmsg`;
 export const recieveMessageRoute = `/messages/getmsg`;
 export const fetchCurrentOnlineStatusRoute = `/auth/online-status`;
