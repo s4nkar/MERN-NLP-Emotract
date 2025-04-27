@@ -1,4 +1,4 @@
-import { blockUserRoute, deleteUserRoute, unBlockUserRoute, usersRoute, singleUserRoute, userAnalyticsRoute, restrictUserRoute } from '@/constants/api';
+import { blockUserRoute, deleteUserRoute, unBlockUserRoute, usersRoute, singleUserRoute, userAnalyticsRoute, restrictUserRoute, genderDetailsRoute } from '@/constants/api';
 import { RestrictUserProps } from '@/types';
 import axiosInstance from '@/utils/axiosInstance';
 import axios from 'axios';
@@ -102,6 +102,17 @@ export async function getStudents(
       `https://api.slingacademy.com/v1/sample-data/users?offset=${offset}&limit=${pageLimit}` +
         (country ? `&search=${country}` : '')
     );
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
+
+export async function getGenderDetails() {
+  try {
+    const res = await axiosInstance.get(genderDetailsRoute);
     return res.data;
   } catch (error) {
     console.log(error);

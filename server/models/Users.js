@@ -54,6 +54,11 @@ const usersSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    gender: {
+      type: String,
+      default: "M",
+      enum: ["M", "F", "O"]
+    },
     phone: {
       type: String,
       required: true,

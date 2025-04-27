@@ -16,7 +16,7 @@ const useMatchedPath = (pathname: string) => {
 
 export default function Header() {
   const pathname = usePathname();
-  const headingText = useMatchedPath(pathname);
+  const headingText = useMatchedPath(pathname) || "";
 
   return (
     <div className="flex flex-1 items-center justify-between bg-secondary px-4">

@@ -7,3 +7,4 @@ export const blockUserRoute = `/auth/block-user`;
 export const unBlockUserRoute = `/auth/unblock-user`;
 export const deleteUserRoute = `/auth/delete-user`;
 export const restrictUserRoute = `/auth/restrict-user`;
+export const genderDetailsRoute = `/auth/user-gender-details`;

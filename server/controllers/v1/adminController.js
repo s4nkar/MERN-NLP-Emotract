@@ -142,12 +142,14 @@ export const getUserAnalytics = async (req, res) => {
           _id: null,
           totalMessages: { $sum: 1 },
           flaggedMessages: { $sum: { $cond: ['$is_flagged', 1, 0] } },
+          processingMessages: { $sum: { $cond: [{ $eq: ['$processing_status', 'processing'] }, 1, 0] } },
         },
       },
     ]);
 
     const totalMessages = messageStats[0]?.totalMessages || 0;
     const flaggedMessages = messageStats[0]?.flaggedMessages || 0;
+    const processingMessages = messageStats[0]?.processingMessages || 0;
 
     const messageTrend = await Messages.aggregate([
       { $match: { sender_id: new mongoose.Types.ObjectId(userId), is_active: true } },
@@ -322,6 +324,7 @@ export const getUserAnalytics = async (req, res) => {
       messages: {
         total: totalMessages,
         flagged: flaggedMessages,
+        processingMessages,
       },
       mlEmotionsObj, // Combined Random Forest + Logistic Regression
       dlEmotionsObj, // Combined BERT + RoBERTa
@@ -371,4 +374,83 @@ export const informUserOrGuardian = async (req, res) => {
     console.error("Server Error:", error);
     return res.status(500).json({ message: "Server error" });
   }
+};
+export const getUserGenderDetails = async (req, res) => {
+  try {
+    // Fetch the earliest and latest registration dates
+    const firstUser = await Users.findOne({ is_active: true }).sort({ createdAt: 1 });
+    const lastUser = await Users.findOne({ is_active: true }).sort({ createdAt: -1 });
+
+    if (!firstUser || !lastUser) {
+      return res.status(404).json({
+        success: false,
+        message: "No active users found."
+      });
+    }
+
+    // The range from the first registered user to the last registered user
+    const startDate = firstUser.createdAt;
+    const referenceDate = lastUser.createdAt;
+
+    const genderStats = await Users.aggregate([
+      {
+        $match: {
+          is_active: true,
+          createdAt: { $gte: startDate, $lte: referenceDate }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            date: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+            gender: "$gender"
+          },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $group: {
+          _id: "$_id.date",
+          genders: {
+            $push: {
+              k: "$_id.gender",  // key (gender)
+              v: "$count"        // value (count)
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          genderCounts: {
+            $arrayToObject: "$genders"  // Ensure correct structure here
+          }
+        }
+      },
+      {
+        $sort: { date: 1 }
+      }
+    ]);
+
+    // Format the result to make sure M/F/O are always present
+    const formattedStats = genderStats.map((item) => ({
+      date: item.date,
+      M: item.genderCounts.M || 0,
+      F: item.genderCounts.F || 0,
+      O: item.genderCounts.O || 0,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      data: formattedStats
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong!"
+    });
+  } 
 };

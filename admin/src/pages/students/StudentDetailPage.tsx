@@ -125,6 +125,7 @@ export default function StudentDetailPage() {
           title={"User Analytics"}
           messageCount={userData?.messages.total}
           flaggedCount={userData?.messages.flagged}
+          processingMessagesCount={userData?.messages.processingMessages}
         />
         <div className="flex justify-end gap-3">
           <Button

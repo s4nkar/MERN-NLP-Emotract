@@ -1,6 +1,7 @@
 import Messages from "../models/Messages.js";
 import analyzeMessage from "./analyze-emotion.js";
 import MessageMetadata from "../models/MessageMetadata.js"; 
+import { safeDecrypt } from "../config/crypto.js";
 
 const processEmotion = async (messageId, text) => {
   try {  
@@ -90,7 +91,7 @@ const handleProcessingMessages = async () => {
     // console.log({ messagesToProcess });
 
     for (const message of messagesToProcess) {
-      await processEmotion(message._id, message.text);
+      await processEmotion(message._id, safeDecrypt(message.text));
     }
   } catch (error) {
     console.error("Error processing messages:", error);
