@@ -27,6 +27,7 @@ export default function Register() {
     parent_email: "",
     age: "",
     phone: "",
+    gender: "M",
   });
 
   useEffect(() => {
@@ -115,6 +116,8 @@ export default function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log(values);
+    
     if (handleValidation()) {
       // const { email, username, password } = values;
       const { data } = await axiosInstance.post(registerRoute, values);
@@ -163,6 +166,13 @@ export default function Register() {
             name="username"
             onChange={(e) => handleChange(e)}
             />
+          
+          <input
+            type="number"
+            placeholder="Mobile No"
+            name="phone"
+            onChange={(e) => handleChange(e)}
+            />
           </div>
           <div className="flex gap-2">
           <input
@@ -205,13 +215,22 @@ export default function Register() {
 
           <input type="date" name="age" onChange={(e) => handleChange(e)} id="" />
           <div className="flex gap-2">
-          <input
-            type="number"
-            placeholder="Mobile No"
-            name="phone"
-            onChange={(e) => handleChange(e)}
-            />
+            <div className="flex justify-center items-center gap-2 input">
+              <label htmlFor="M" className="text-white flex gap-1 cursor-pointer">
+                <span className="capitalize">Male</span>
+                <input type="radio" name="gender" value="M" id="M" defaultChecked  onChange={(e) => handleChange(e)}/>
+              </label>
+              <label htmlFor="F" className="text-white flex gap-1 cursor-pointer">
+                <span className="capitalize">Female</span>
+                <input type="radio" name="gender" value="F" id="F"  onChange={(e) => handleChange(e)}/>
+              </label>
+              <label htmlFor="O" className="text-white flex gap-1 cursor-pointer">
+                <span className="capitalize">Others</span>
+                <input type="radio" name="gender" value="O" id="O" onChange={(e) => handleChange(e)}/>
+              </label>
+            </div>
           </div>
+
           </div>
           </div>
           <div className="flex justify-end">
@@ -258,7 +277,7 @@ const FormContainer = styled.div`
     border-radius: 2rem;
     padding: 3rem 5rem;
   }
-  input {
+  input, .input {
     background-color: transparent;
     padding: 1rem;
     border: 0.1rem solid #4e0eff;
@@ -287,7 +306,6 @@ const FormContainer = styled.div`
   }
   span {
     color: white;
-    text-transform: uppercase;
     a {
       color: #4e0eff;
       text-decoration: none;
