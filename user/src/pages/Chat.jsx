@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { allContactUsersRoute } from "../utils/APIRoutes";
+import { allContactUsersRoute, userBlockRoute } from "../utils/APIRoutes";
 import ChatContainer from "../components/ChatContainer";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
 import axiosInstance from "../utils/axiosInstance";
 import { useSocket } from "../context/SocketProvider";
+import SuspendedUserPopup from "../components/SuspendedUserPopup";
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function Chat() {
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
+  const [userBlockStatus, setUserBlockStatus] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -57,8 +59,20 @@ export default function Chat() {
         }
       }
     };
+
+    const fetchUserBlockStatus = async () => {
+        if (currentUser) {
+          try {
+            const { data } = await axiosInstance.get(`${userBlockRoute}/${currentUser?._id}`);
+            setUserBlockStatus(data?.is_blocked);
+          } catch (error) {
+            console.error("Error fetching contacts:", error);
+          }
+        }
+      }
   
     fetchContacts();
+    fetchUserBlockStatus();
   }, [currentUser, navigate]);
 
   // Handle new contact after message
@@ -88,12 +102,11 @@ export default function Chat() {
     setCurrentChat(chat);
   };
 
-
-
   return (
     <>
       <Container>
         <div className="container">
+          <SuspendedUserPopup isSuspended={userBlockStatus}/>
           <Contacts contacts={contacts} changeChat={handleChatChange}  />
           {currentChat === undefined ? (
             <Welcome />

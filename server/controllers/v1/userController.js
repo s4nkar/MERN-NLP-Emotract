@@ -292,6 +292,17 @@ export const getUserOnlineStatus = async (req, res) => {
   }
 }
 
+export const getUserBlockStatus = async (req, res) => {
+  try {
+    const user = await Users.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ is_blocked: user.is_flagged });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
 export const logOut = async (req, res) => {
   try {
     const { userId } = req.body; // User ID from frontend
