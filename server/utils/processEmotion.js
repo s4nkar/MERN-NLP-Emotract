@@ -1,13 +1,15 @@
 import Messages from "../models/Messages.js";
 import analyzeMessage from "./analyze-emotion.js";
 import MessageMetadata from "../models/MessageMetadata.js"; 
+import { safeDecrypt } from "../config/crypto.js";
 
 const processEmotion = async (messageId, text) => {
   try {  
     // Get emotions from FastAPI 
     // Analyze the message to get emotions and sentiments from 4 different models
     const { bert, roberta, rf, lr } = await analyzeMessage(text);
-
+    console.log(bert, roberta, rf, lr);
+    
     // Initialize the sentiment score and flagged status
     let sentiment_score = 0;  // This will hold the overall sentiment score based on the analysis
     let is_flagged = false;   // This flag indicates whether the message should be flagged or not
@@ -90,7 +92,7 @@ const handleProcessingMessages = async () => {
     // console.log({ messagesToProcess });
 
     for (const message of messagesToProcess) {
-      await processEmotion(message._id, message.text);
+      await processEmotion(message._id, safeDecrypt(message.text));
     }
   } catch (error) {
     console.error("Error processing messages:", error);
