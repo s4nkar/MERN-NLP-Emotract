@@ -142,12 +142,14 @@ export const getUserAnalytics = async (req, res) => {
           _id: null,
           totalMessages: { $sum: 1 },
           flaggedMessages: { $sum: { $cond: ['$is_flagged', 1, 0] } },
+          processingMessages: { $sum: { $cond: [{ $eq: ['$processing_status', 'processing'] }, 1, 0] } },
         },
       },
     ]);
 
     const totalMessages = messageStats[0]?.totalMessages || 0;
     const flaggedMessages = messageStats[0]?.flaggedMessages || 0;
+    const processingMessages = messageStats[0]?.processingMessages || 0;
 
     const messageTrend = await Messages.aggregate([
       { $match: { sender_id: new mongoose.Types.ObjectId(userId), is_active: true } },
@@ -322,6 +324,7 @@ export const getUserAnalytics = async (req, res) => {
       messages: {
         total: totalMessages,
         flagged: flaggedMessages,
+        processingMessages,
       },
       mlEmotionsObj, // Combined Random Forest + Logistic Regression
       dlEmotionsObj, // Combined BERT + RoBERTa
