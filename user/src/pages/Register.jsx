@@ -211,16 +211,18 @@ export default function Register() {
             type="text"
             placeholder="Aadhaar Number"
             name="aadhaar_number"
+            required
             onChange={(e) => handleChange(e)}
           />
           <input
             type="email"
             placeholder="Parent Email"
             name="parent_email"
+            required
             onChange={(e) => handleChange(e)}
           />
 
-          <input type="date" name="age" onChange={(e) => handleChange(e)} id="" />
+          <input type="date" name="age" required onChange={(e) => handleChange(e)} id="" />
           <div className="flex gap-2">
             <div className="flex justify-center items-center gap-2 input">
               <label htmlFor="M" className="text-white flex gap-1 cursor-pointer">
