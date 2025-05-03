@@ -11,7 +11,7 @@ const analyzeMessage = async (message) => {
     // console.log(response);
     return await response.data.data;
   } catch (error) {
-    console.error("Error analyzing sentiment:", error);
+    // console.error("Error analyzing sentiment:", error);
     return { error: "Failed to analyze sentiment" };
   }
 };

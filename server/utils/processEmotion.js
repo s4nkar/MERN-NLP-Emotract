@@ -8,8 +8,14 @@ const processEmotion = async (messageId, text, userId) => {
   try {  
     // Get emotions from FastAPI 
     // Analyze the message to get emotions and sentiments from 4 different models
-    const { bert, roberta, rf, lr } = await analyzeMessage(text);
+    const response = await analyzeMessage(text);
 
+    if (response?.error) {
+      console.log("Fastapi Server Error");
+      return ""
+    }
+
+    const { bert, roberta, rf, lr } = response;
     // Initialize the sentiment score and flagged status
     let sentiment_score = 0;  // This will hold the overall sentiment score based on the analysis
     let is_flagged = false;   // This flag indicates whether the message should be flagged or not

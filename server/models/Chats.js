@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from 'uuid';
 
 const ChatsSchema = new mongoose.Schema(
   {
@@ -11,11 +12,14 @@ const ChatsSchema = new mongoose.Schema(
     },
     group_name: {
       type: String,
+      default: function () {
+        // Generate a random name if it's not a group
+        return this.is_group ? undefined : `chat-${uuidv4()}`;
+      },
       required: function () {
         return this.is_group;
       },
       min: 1,
-      unique: true,
     },
     group_admins: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Users" }
